@@ -1,29 +1,29 @@
-const mongoose = require('mongoose');
-const Candidato = mongoose.model('Candidato');
-const moment = require('moment')
-const imageFileHelper = require('../helpers/upload-image-helper')
-const fs = require('fs')
-const path = require('path')
-const { promisify } = require('util')
+const mongoose = require("mongoose");
+const Candidato = mongoose.model("Candidato");
+const moment = require("moment");
+const imageFileHelper = require("../helpers/upload-image-helper");
+const fs = require("fs");
+const path = require("path");
+const { promisify } = require("util");
 
-const EmailController = require('./EmailController');
+const EmailController = require("./EmailController");
 
 class CandidatoController {
-
   /**
-    *
-    * ADM
-    *
-    */
-
+   *
+   * ADM
+   *
+   */
 
   async search(req, res, next) {
     const zona = req.payload.id;
-    const search = new RegExp(req.params.search, 'i');
+    const search = new RegExp(req.params.search, "i");
     try {
-      const candidato = await Candidato.findOne(
-        { numero_candidato: req.params.numero_candidato, zona: zona, deletado: false }
-      );
+      const candidato = await Candidato.findOne({
+        numero_candidato: req.params.numero_candidato,
+        zona: zona,
+        deletado: false,
+      });
       return res.send({ candidato });
     } catch (e) {
       next(e);
@@ -33,10 +33,10 @@ class CandidatoController {
   async inserirNumero(req, res, next) {
     try {
       const candidato = await Candidato.find();
-      candidato.map(async item => {
-        item.numero_candidato = 1
-        await item.save()
-      })
+      candidato.map(async (item) => {
+        item.numero_candidato = 1;
+        await item.save();
+      });
       return res.send({ candidato });
     } catch (e) {
       next(e);
@@ -69,12 +69,16 @@ class CandidatoController {
         //outros_cursos: dadosCandidato.outros_cursos,
         data_entrada_inst: dadosCandidato.data_entrada_inst,
         data_entrada_docencia: dadosCandidato.data_entrada_docencia,
-        tempo_modulacao: calculaTempo(moment(dadosCandidato.data_entrada_inst).format('DD/MM/YYYY')),
-        tempo_docencia: calculaTempo(moment(dadosCandidato.data_entrada_docencia).format('DD/MM/YYYY')),
+        tempo_modulacao: calculaTempo(
+          moment(dadosCandidato.data_entrada_inst).format("DD/MM/YYYY")
+        ),
+        tempo_docencia: calculaTempo(
+          moment(dadosCandidato.data_entrada_docencia).format("DD/MM/YYYY")
+        ),
         numero_candidato: dadosCandidato.numero_candidato,
         protocolo: `EDU${numRandom}2021`,
-        zona: dadosCandidato.zona
-      })
+        zona: dadosCandidato.zona,
+      });
       return res.send({ candidato });
     } catch (e) {
       next(e);
@@ -101,12 +105,12 @@ class CandidatoController {
 
   async AddCpfCandidato(req, res, next) {
     try {
-      const candidato = await Candidato.find({ nome: 'Branco' });
+      const candidato = await Candidato.find({ nome: "Branco" });
 
-      candidato.map(async item => {
-        item.cpf = '000.000.000-00'
-        await item.save()
-      })
+      candidato.map(async (item) => {
+        item.cpf = "000.000.000-00";
+        await item.save();
+      });
       return res.send({ candidato });
     } catch (e) {
       next(e);
@@ -115,8 +119,10 @@ class CandidatoController {
 
   //GET/candidatoZona/:zonaId
   async candidatoZona(req, res, next) {
+    console.log(req.params.zonaId);
     try {
       const candidatos = await Candidato.find({ zona: req.params.zonaId });
+      console.log(candidatos);
       return res.send({ candidatos });
     } catch (e) {
       next(e);
@@ -127,7 +133,7 @@ class CandidatoController {
   async candidatoId(req, res, next) {
     try {
       const candidato = await Candidato.find({ _id: req.params.id });
-      console.log(req.params.id)
+      console.log(req.params.id);
       return res.send({ candidato });
     } catch (e) {
       next(e);
@@ -138,7 +144,10 @@ class CandidatoController {
   async showAdm(req, res, next) {
     const zona = req.payload.id;
     try {
-      const candidato = await Candidato.findOne({ _id: req.params.id, zona: zona })
+      const candidato = await Candidato.findOne({
+        _id: req.params.id,
+        zona: zona,
+      });
       return res.send({ candidato });
     } catch (e) {
       next(e);
@@ -149,7 +158,8 @@ class CandidatoController {
   async remove(req, res, next) {
     try {
       const candidato = await Candidato.findById(req.params.id);
-      if (!candidato) return res.status(400).send({ error: "Candidato não encontrado." })
+      if (!candidato)
+        return res.status(400).send({ error: "Candidato não encontrado." });
       candidato.deletado = true;
       await candidato.save();
       return res.send({ deletado: true });
@@ -170,19 +180,20 @@ class CandidatoController {
 
   async showSuperAdm(req, res, next) {
     try {
-      const candidatos = await Candidato.find({}).collation({ locale: "en", strength: 1 }).sort({ nome: 1 });
+      const candidatos = await Candidato.find({})
+        .collation({ locale: "en", strength: 1 })
+        .sort({ nome: 1 });
       return res.send({ candidatos });
     } catch (e) {
       next(e);
     }
   }
 
-
   async searchProtocolo(req, res, next) {
     try {
-      const candidato = await Candidato.findOne(
-        { protocolo: req.body.protocolo }
-      );
+      const candidato = await Candidato.findOne({
+        protocolo: req.body.protocolo,
+      });
       return res.send({ candidato });
     } catch (e) {
       next(e);
@@ -192,20 +203,22 @@ class CandidatoController {
   async store(req, res, next) {
     const dadosCandidato = req.body;
 
+    console.log(dadosCandidato);
+
     // REGRAS DE PROTOCOLO
-    const numRandom = Math.floor((Math.random() * 65536) * Math.random() * 65536);
+    const numRandom = Math.floor(Math.random() * 65536 * Math.random() * 65536);
 
     // REGRAS DE TEMPOS DE INST E DOCENCIA
     function calculaTempo(data) {
       let dataAtual = new Date();
       let anoAtual = dataAtual.getFullYear();
-      let anoDataParts = data.split('/');
+      let anoDataParts = data.split("/");
       let diaData = anoDataParts[0];
       let mesData = anoDataParts[1];
       let anoData = anoDataParts[2];
       let idade = anoAtual - anoData;
       let mesAtual = dataAtual.getMonth() + 1;
-      //Se mes atual for menor que a data informada, nao fez ano ainda;  
+      //Se mes atual for menor que a data informada, nao fez ano ainda;
       if (mesAtual < mesData) {
         idade--;
       } else {
@@ -245,19 +258,24 @@ class CandidatoController {
         //outros_cursos: dadosCandidato.outros_cursos,
         data_entrada_inst: dadosCandidato.data_entrada_inst,
         data_entrada_docencia: dadosCandidato.data_entrada_docencia,
-        tempo_modulacao: calculaTempo(moment(dadosCandidato.data_entrada_inst).format('DD/MM/YYYY')),
-        tempo_docencia: calculaTempo(moment(dadosCandidato.data_entrada_docencia).format('DD/MM/YYYY')),
+        tempo_modulacao: calculaTempo(
+          moment(dadosCandidato.data_entrada_inst).format("DD/MM/YYYY")
+        ),
+        tempo_docencia: calculaTempo(
+          moment(dadosCandidato.data_entrada_docencia).format("DD/MM/YYYY")
+        ),
         numero_candidato: dadosCandidato.numero_candidato,
         protocolo: `EDU${numRandom}2021`,
-        zona: dadosCandidato.zona
-      })
+        zona: dadosCandidato.zona,
+      });
 
-      await candidato.save()
+      await candidato.save();
 
       return res.send({ candidato });
     } catch (e) {
+      console.log(e);
       res.status(422).json({ errors: "CPF já consta no banco" });
-      next(e)
+      next(e);
     }
   }
 
@@ -265,20 +283,31 @@ class CandidatoController {
   async updateFoto(req, res, next) {
     try {
       const candidato = await Candidato.findOne({ _id: req.params.id });
-      if (!candidato) return res.status(400).send({ error: "Candidato não encontrado." });
+      if (!candidato)
+        return res.status(400).send({ error: "Candidato não encontrado." });
       let cpf2 = candidato.cpf;
       cpf2 = cpf2.replace(".", "");
       cpf2 = cpf2.replace(".", "");
       cpf2 = cpf2.replace("-", "");
 
-      imageFileHelper.compressImage(req.file, 1000)
-        .then(async newPath => {
-          const docItem = (candidato.foto[0]) ? candidato.foto[0] : '';
-          if (candidato.foto[0]) promisify(fs.unlink)(path.resolve(__dirname, '..', 'tmp', 'doc__eleicao', 'candidatos', `${cpf2}`, docItem))
-          candidato.foto = newPath;
-          await candidato.save();
-          return res.send({ candidato });
-        })
+      imageFileHelper.compressImage(req.file, 1000).then(async (newPath) => {
+        const docItem = candidato.foto[0] ? candidato.foto[0] : "";
+        if (candidato.foto[0])
+          promisify(fs.unlink)(
+            path.resolve(
+              __dirname,
+              "..",
+              "tmp",
+              "doc__eleicao",
+              "candidatos",
+              `${cpf2}`,
+              docItem
+            )
+          );
+        candidato.foto = newPath;
+        await candidato.save();
+        return res.send({ candidato });
+      });
     } catch (e) {
       next(e);
     }
@@ -309,10 +338,10 @@ class CandidatoController {
       data_entrada_inst,
       data_entrada_docencia,
       numero_candidato,
-      foto
+      foto,
     } = req.body;
     try {
-      const candidato = await Candidato.findById(req.params.id)
+      const candidato = await Candidato.findById(req.params.id);
       if (nome) candidato.nome = nome;
       if (email) candidato.email = email;
       if (cpf) candidato.cpf = cpf;
@@ -325,7 +354,8 @@ class CandidatoController {
       if (graduacao) candidato.graduacao = graduacao;
       if (curso_graduacao) candidato.curso_graduacao = curso_graduacao;
       if (pos_graduacao) candidato.pos_graduacao = pos_graduacao;
-      if (curso_pos_graduacao) candidato.curso_pos_graduacao = curso_pos_graduacao;
+      if (curso_pos_graduacao)
+        candidato.curso_pos_graduacao = curso_pos_graduacao;
       if (mestrado) candidato.mestrado = mestrado;
       if (curso_mestrado) candidato.curso_mestrado = curso_mestrado;
       if (doutorado) candidato.doutorado = doutorado;
@@ -334,39 +364,10 @@ class CandidatoController {
       if (obs_curso_gestor) candidato.obs_curso_gestor = obs_curso_gestor;
       if (outros_cursos) candidato.outros_cursos = outros_cursos;
       if (data_entrada_inst) candidato.data_entrada_inst = data_entrada_inst;
-      if (data_entrada_docencia) candidato.data_entrada_docencia = data_entrada_docencia;
+      if (data_entrada_docencia)
+        candidato.data_entrada_docencia = data_entrada_docencia;
       if (numero_candidato) candidato.numero_candidato = numero_candidato;
       if (foto) candidato.foto = foto;
-      await candidato.save();
-
-      return res.send({ candidato });
-    } catch (e) {
-      next(e)
-    }
-  }
-
-  async uploadDocs(req, res, next) {
-    try {
-      const { categoria } = req.query;
-      const candidato = await Candidato.findById(req.params.id);
-      if (!candidato) return res.status(400).send({ error: "Candidato não encontrado." });
-      const { filename: file } = req.file;
-
-      let cpf2 = candidato.cpf;
-      cpf2 = cpf2.replace(".", "");
-      cpf2 = cpf2.replace(".", "");
-      cpf2 = cpf2.replace("-", "");
-
-      const docFields = ['doc_1', 'doc_2', 'doc_3', 'doc_4', 'doc_5', 'doc_6', 'doc_7', 'doc_8', 'doc_9', 'doc_10', 'doc_11',]
-      docFields.forEach(item => {
-        const docItem = (candidato.docs[item].file) ? candidato.docs[item].file : '';
-        if (categoria === item) promisify(fs.unlink)(path.resolve(__dirname, '..', 'tmp', 'doc__eleicao', 'candidatos', `${cpf2}`, docItem))
-        if (categoria.includes(item)) {
-          candidato.docs[item].file = file, candidato.docs[item].original_file = req.file.originalname
-        }
-      })
-
-      candidato.markModified("docs")
       await candidato.save();
 
       return res.send({ candidato });
@@ -375,6 +376,63 @@ class CandidatoController {
     }
   }
 
+  async uploadDocs(req, res, next) {
+    console.log("teste");
+    try {
+      const { categoria } = req.query;
+      const candidato = await Candidato.findById(req.params.id);
+      if (!candidato)
+        return res.status(400).send({ error: "Candidato não encontrado." });
+      const { filename: file } = req.file;
+
+      let cpf2 = candidato.cpf;
+      cpf2 = cpf2.replace(".", "");
+      cpf2 = cpf2.replace(".", "");
+      cpf2 = cpf2.replace("-", "");
+
+      const docFields = [
+        "doc_1",
+        "doc_2",
+        "doc_3",
+        "doc_4",
+        "doc_5",
+        "doc_6",
+        "doc_7",
+        "doc_8",
+        "doc_9",
+        "doc_10",
+        "doc_11",
+      ];
+      docFields.forEach((item) => {
+        const docItem = candidato.docs[item].file
+          ? candidato.docs[item].file
+          : "";
+        if (categoria === item)
+          promisify(fs.unlink)(
+            path.resolve(
+              __dirname,
+              "..",
+              "tmp",
+              "doc__eleicao",
+              "candidatos",
+              `${cpf2}`,
+              docItem
+            )
+          );
+        if (categoria.includes(item)) {
+          (candidato.docs[item].file = file),
+            (candidato.docs[item].original_file = req.file.originalname);
+        }
+      });
+
+      candidato.markModified("docs");
+      await candidato.save();
+
+      return res.send({ candidato });
+    } catch (e) {
+      next(e);
+    }
+  }
 }
 
-module.exports = CandidatoController
+module.exports = CandidatoController;

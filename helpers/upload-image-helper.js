@@ -1,38 +1,34 @@
-const fs = require('fs'),
-  sharp = require('sharp');
+const fs = require("fs"),
+  sharp = require("sharp");
 
 exports.compressImage = (file, size) => {
-  const newPath = file.path.split('.')[0] + '.webp';
-  const fileName = file.filename.split('.')[0] + '.webp'
-
+  const newPath = file.path.split(".")[0] + ".webp";
+  const fileName = file.filename.split(".")[0] + ".webp";
 
   return sharp(file.path)
     .resize(size)
-    .toFormat('webp')
+    .toFormat("webp")
     .webp({
-      quality: 50
+      quality: 50,
     })
     .toBuffer()
-    .then(data => {
-
+    .then((data) => {
       // Deletando o arquivo antigo
       // O fs.acess serve para testar se o arquivo realmente existe, evitando bugs
       fs.access(file.path, (err) => {
-
         // Um erro significa que a o arquivo não existe, então não tentamos apagar
         if (!err) {
-
           //Se não houve erros, tentamos apagar
-          fs.unlink(file.path, err => {
-
+          fs.unlink(file.path, (err) => {
             // Não quero que erros aqui parem todo o sistema, então só vou imprimir o erro, sem throw.
-            if (err) console.log(err)
-          })
+            if (err) console.log(err);
+          });
         }
       });
 
       //Agora vamos armazenar esse buffer no novo caminho
-      fs.writeFile(newPath, data, err => {
+      fs.writeFile(newPath, data, (err) => {
+        console.log(newPath);
         if (err) {
           // Já aqui um erro significa que o upload falhou, então é importante que o usuário saiba.
           throw err;
@@ -41,5 +37,5 @@ exports.compressImage = (file, size) => {
 
       // Se o código chegou até aqui, deu tudo certo, então vamos retornar o novo caminho
       return fileName;
-    })
-}
+    });
+};
