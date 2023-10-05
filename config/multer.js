@@ -12,7 +12,7 @@ const storage = multer.diskStorage({
     cpf2 = cpf2.replace("-", "");
     var isvalidate = function (data) {
 
-      var dir =  __dirname + "/tmp/doc__eleicao/candidatos" + "/" + cpf2
+      var dir =  __dirname + "/" + "tmp/doc__eleicao/candidatos" + "/" + cpf2
       // var dir = "./tmp/doc__eleicao/candidatos" + "/" + cpf2
       if (!fs.existsSync(dir)) {
         fs.mkdirSync(dir, { recursive: true });
