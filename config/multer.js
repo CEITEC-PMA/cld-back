@@ -12,8 +12,8 @@ const storage = multer.diskStorage({
     cpf2 = cpf2.replace("-", "");
     var isvalidate = function (data) {
 
-      var dir = "/var/www/html/pma-api/back-end-eleicao/tmp/doc__eleicao/candidatos" + "/" + cpf2
-      //var dir = "./tmp/doc__eleicao/candidatos" + "/" + cpf2
+      var dir =  "/var/www/html/backend/back-end-eleicao/tmp/doc__eleicao/candidatos" + "/" + cpf2
+      // var dir = "./tmp/doc__eleicao/candidatos" + "/" + cpf2
       if (!fs.existsSync(dir)) {
         fs.mkdirSync(dir, { recursive: true });
         return dir;
@@ -59,7 +59,7 @@ const storageInscricao = multer.diskStorage({
 
     var isvalidate = function (data) {
       var dir = "/var/www/html/pma-api/eleicao-educacao/tmp/doc__eleicao/candidatos" + "/" + cpf2
-      //var dir = "./tmp/doc__eleicao/candidatos" + "/" + cpf2
+      // var dir = "../tmp/doc__eleicao/candidatos" + "/" + cpf2
       if (!fs.existsSync(dir)) {
         fs.mkdirSync(dir, { recursive: true });
         return dir;
