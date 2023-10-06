@@ -72,13 +72,13 @@ router.get(
 router.get(
   "/candidatoId/:id",
   auth.required,
-  AdmValidation.adm,
+  ZonaValidation.adm,
   candidatoController.candidatoId
 ); //testado
 router.get(
   "/candidatoZona/:zonaId",
   auth.required,
-  AdmValidation.adm,
+  ZonaValidation.adm,
   candidatoController.candidatoZona
 );
 // router.get('/lista/candidatos/:id', auth.required, AdmValidation.adm, candidatoController.showSuperAdm);

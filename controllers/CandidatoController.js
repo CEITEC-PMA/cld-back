@@ -132,7 +132,7 @@ class CandidatoController {
   //GET/candidatoId/:id
   async candidatoId(req, res, next) {
     try {
-      const candidato = await Candidato.find({ _id: req.params.id });
+      const candidato = await Candidato.findOne({ _id: req.params.id });
       console.log(req.params.id);
       return res.send({ candidato });
     } catch (e) {
