@@ -1,4 +1,4 @@
 {
-    "dbTeste": "mongodb://adrianobarbosa:aa147258@10.10.100.64:27017/eleicao?authSource=admin",
-    "dbProduction": "mongodb://adrianobarbosa:aa147258@10.10.100.64:27017/eleicao?authSource=admin"
+  "dbTeste": "mongodb://localhost:27017/eleicao",
+  "dbProduction": "mongodb://brenogomes:breno4584660@10.10.100.58:27017/?eleicao?authSource=admin"
 }
