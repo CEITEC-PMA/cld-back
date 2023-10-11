@@ -50,12 +50,12 @@ class ZonaController {
   // POST /
   async store(req, res, next) {
     try {
-      const { nome, inep, password } = req.body;
+      const { nome, inep, password, email } = req.body;
       const zona = new Zona({
         nome,
         password,
         inep,
-        //email
+        email,
       });
       console.log(zona);
       zona.setSenha(password);
@@ -70,7 +70,7 @@ class ZonaController {
   async update(req, res, next) {
     const { password } = req.body;
     try {
-        console.log(req.payload.id)
+      console.log(req.payload.id);
       const zona = await Zona.findOne({ _id: req.payload.id });
       if (password) zona.setSenha(password);
       zona.acesso = 1;
