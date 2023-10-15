@@ -133,7 +133,7 @@ const CandidatoValidation = {
       // curso_mestrado: Joi.string().optional(),
       // doutorado: Joi.boolean().optional(),
       // curso_doutorado: Joi.string().optional(),
-      curso_gestor: Joi.boolean().optional(),
+      curso_gestor: Joi.string().optional(),
       obs_curso_gestor: Joi.string().optional(),
       //outros_cursos: Joi.boolean().optional(),
       tempo_modulacao: Joi.string().optional(),
