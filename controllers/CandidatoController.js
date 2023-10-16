@@ -121,7 +121,10 @@ class CandidatoController {
   async candidatoZona(req, res, next) {
     console.log(req.params.zonaId);
     try {
-      const candidatos = await Candidato.find({ zona: req.params.zonaId });
+      const candidatos = await Candidato.find({
+        zona: req.params.zonaId,
+        deletado: false,
+      });
       console.log(candidatos);
       return res.send({ candidatos });
     } catch (e) {
