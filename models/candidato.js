@@ -133,63 +133,63 @@ const CandidatoSchema = new mongoose.Schema(
     },
     docs: {
       type: {
-        doc_1: {
+        doc_01: {
           type: {
             file: { type: String, required: true },
             original_file: { type: String, required: true },
           },
           default: {},
         },
-        doc_2: {
+        doc_02: {
           type: {
             file: { type: String, required: true },
             original_file: { type: String, required: true },
           },
           default: {},
         },
-        doc_3: {
+        doc_03: {
           type: {
             file: { type: String, required: true },
             original_file: { type: String, required: true },
           },
           default: {},
         },
-        doc_4: {
+        doc_04: {
           type: {
             file: { type: String, required: true },
             original_file: { type: String, required: true },
           },
           default: {},
         },
-        doc_5: {
+        doc_05: {
           type: {
             file: { type: String, required: true },
             original_file: { type: String, required: true },
           },
           default: {},
         },
-        doc_6: {
+        doc_06: {
           type: {
             file: { type: String, required: true },
             original_file: { type: String, required: true },
           },
           default: {},
         },
-        doc_7: {
+        doc_07: {
           type: {
             file: { type: String, required: true },
             original_file: { type: String, required: true },
           },
           default: {},
         },
-        doc_8: {
+        doc_08: {
           type: {
             file: { type: String, required: true },
             original_file: { type: String, required: true },
           },
           default: {},
         },
-        doc_9: {
+        doc_09: {
           type: {
             file: { type: String, required: true },
             original_file: { type: String, required: true },
@@ -275,15 +275,15 @@ const CandidatoSchema = new mongoose.Schema(
         },
       },
       default: {
-        doc_1: { file: "", original_file: "" },
-        doc_2: { file: "", original_file: "" },
-        doc_3: { file: "", original_file: "" },
-        doc_4: { file: "", original_file: "" },
-        doc_5: { file: "", original_file: "" },
-        doc_6: { file: "", original_file: "" },
-        doc_7: { file: "", original_file: "" },
-        doc_8: { file: "", original_file: "" },
-        doc_9: { file: "", original_file: "" },
+        doc_01: { file: "", original_file: "" },
+        doc_02: { file: "", original_file: "" },
+        doc_03: { file: "", original_file: "" },
+        doc_04: { file: "", original_file: "" },
+        doc_05: { file: "", original_file: "" },
+        doc_06: { file: "", original_file: "" },
+        doc_07: { file: "", original_file: "" },
+        doc_08: { file: "", original_file: "" },
+        doc_09: { file: "", original_file: "" },
         doc_10: { file: "", original_file: "" },
         doc_11: { file: "", original_file: "" },
         doc_12: { file: "", original_file: "" },
