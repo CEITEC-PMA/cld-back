@@ -405,12 +405,21 @@ class CandidatoController {
         "doc_9",
         "doc_10",
         "doc_11",
+        "doc_12",
+        "doc_13",
+        "doc_14",
+        "doc_15",
+        "doc_16",
+        "doc_17",
+        "doc_18",
+        "doc_19",
+        "doc_20",
       ];
       docFields.forEach((item) => {
         const docItem = candidato.docs[item].file
           ? candidato.docs[item].file
           : "";
-        if (categoria === item)
+        if (docItem && categoria === item)
           promisify(fs.unlink)(
             path.resolve(
               __dirname,
