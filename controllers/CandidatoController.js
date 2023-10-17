@@ -416,30 +416,59 @@ class CandidatoController {
         "doc_20",
         "doc_21",
       ];
-      docFields.forEach((item) => {
-        const docItem = candidato.docs[item].file
-          ? candidato.docs[item].file
-          : "";
-        if (docItem && categoria === item)
-          promisify(fs.unlink)(
-            path.resolve(
-              __dirname,
-              "..",
-              "tmp",
-              "doc__eleicao",
-              "candidatos",
-              `${cpf2}`,
-              docItem
-            )
-          );
-        if (categoria.includes(item)) {
-          (candidato.docs[item].file = file),
-            (candidato.docs[item].original_file = req.file.originalname);
-        }
-      });
+
+      if (!candidato.docs[categoria]) {
+        candidato.docs[categoria] = {
+          file: "",
+          original_file: "",
+        };
+      }
+
+      const docItem = candidato.docs[categoria].file
+        ? candidato.docs[categoria].file
+        : "";
+      if (docItem && categoria === item)
+        promisify(fs.unlink)(
+          path.resolve(
+            __dirname,
+            "..",
+            "tmp",
+            "doc__eleicao",
+            "candidatos",
+            `${cpf2}`,
+            docItem
+          )
+        );
+      candidato.docs[categoria].file = file;
+      candidato.docs[categoria].original_file = req.file.originalname;
 
       candidato.markModified("docs");
       await candidato.save();
+      // docFields.forEach((item) => {
+      //   console.log(candidato.docs[item]);
+      //   const docItem = candidato.docs[item].file
+      //     ? candidato.docs[item].file
+      //     : "";
+      //   if (docItem && categoria === item)
+      //     promisify(fs.unlink)(
+      //       path.resolve(
+      //         __dirname,
+      //         "..",
+      //         "tmp",
+      //         "doc__eleicao",
+      //         "candidatos",
+      //         `${cpf2}`,
+      //         docItem
+      //       )
+      //     );
+      //   if (categoria.includes(item)) {
+      //     (candidato.docs[item].file = file),
+      //       (candidato.docs[item].original_file = req.file.originalname);
+      //   }
+      // });
+
+      // candidato.markModified("docs");
+      // await candidato.save();
 
       return res.send({ candidato });
     } catch (e) {
