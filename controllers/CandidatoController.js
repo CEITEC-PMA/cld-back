@@ -414,6 +414,7 @@ class CandidatoController {
         "doc_18",
         "doc_19",
         "doc_20",
+        "doc_21",
       ];
       docFields.forEach((item) => {
         const docItem = candidato.docs[item].file
