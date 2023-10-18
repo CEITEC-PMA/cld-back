@@ -10,11 +10,11 @@ const storage = multer.diskStorage({
     cpf2 = cpf2.replace(".", "");
     cpf2 = cpf2.replace("-", "");
     var isvalidate = function (data) {
-      var dir =
-        "/var/www/html/backend/back-end-eleicao/tmp/doc__eleicao/candidatos" +
-        "/" +
-        cpf2;
-      // var dir = "./tmp/doc__eleicao/candidatos" + "/" + cpf2
+      // var dir =
+      //   "/var/www/html/backend/back-end-eleicao/tmp/doc__eleicao/candidatos" +
+      //   "/" +
+      //   cpf2;
+      var dir = "./tmp/doc__eleicao/candidatos" + "/" + cpf2;
       if (!fs.existsSync(dir)) {
         fs.mkdirSync(dir, { recursive: true });
         return dir;
@@ -45,7 +45,7 @@ const storage = multer.diskStorage({
   },
 });
 
-const upload = multer({ storage });
+const upload = multer({ storage, limits: { fileSize: 20 * 1024 * 1024 } });
 
 //UPLOAD DE DOCUMENTOS
 
@@ -59,11 +59,12 @@ const storageInscricao = multer.diskStorage({
     cpf2 = cpf2.replace("-", "");
 
     var isvalidate = function (data) {
-      var dir =
-        "/var/www/html/backend/back-end-eleicao/tmp/doc__eleicao/candidatos" +
-        "/" +
-        cpf2;
-      // var dir = "../tmp/doc__eleicao/candidatos" + "/" + cpf2
+      // var dir =
+      //   "/var/www/html/backend/back-end-eleicao/tmp/doc__eleicao/candidatos" +
+      //   "/" +
+      //   cpf2;
+      var dir = "./tmp/doc__eleicao/candidatos" + "/" + cpf2;
+      console.log(dir);
       if (!fs.existsSync(dir)) {
         fs.mkdirSync(dir, { recursive: true });
         return dir;
@@ -92,7 +93,7 @@ const uploadCandidato = multer({
     callback(null, true);
   },
   storage: storageInscricao,
-  limits: { fileSize: 5 * 1024 * 1024 },
+  limits: { fileSize: 10 * 1024 * 1024 },
 });
 
 module.exports = {
