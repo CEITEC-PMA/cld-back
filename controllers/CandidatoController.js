@@ -427,7 +427,9 @@ class CandidatoController {
       const docItem = candidato.docs[categoria].file
         ? candidato.docs[categoria].file
         : "";
+      console.log(docItem);
       if (
+        docItem &&
         fs.existsSync(
           path.resolve(
             __dirname,
