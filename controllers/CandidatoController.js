@@ -427,7 +427,20 @@ class CandidatoController {
       const docItem = candidato.docs[categoria].file
         ? candidato.docs[categoria].file
         : "";
-      if (docItem && categoria === item)
+      if (
+        fs.existsSync(
+          path.resolve(
+            __dirname,
+            "..",
+            "tmp",
+            "doc__eleicao",
+            "candidatos",
+            `${cpf2}`,
+            docItem
+          )
+        )
+      ) {
+        console.log("ARQUIVO EXISTE");
         promisify(fs.unlink)(
           path.resolve(
             __dirname,
@@ -439,6 +452,7 @@ class CandidatoController {
             docItem
           )
         );
+      }
       candidato.docs[categoria].file = file;
       candidato.docs[categoria].original_file = req.file.originalname;
 
