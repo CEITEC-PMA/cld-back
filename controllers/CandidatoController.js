@@ -5,8 +5,19 @@ const imageFileHelper = require("../helpers/upload-image-helper");
 const fs = require("fs");
 const path = require("path");
 const { promisify } = require("util");
+const cron = require("node-cron");
 
 const EmailController = require("./EmailController");
+
+let cadastroAberto = true;
+
+cron.schedule(
+  "59 59 23 * * *",
+  async () => {
+    cadastroAberto = false;
+  },
+  { timezone: "America/Sao_Paulo" }
+);
 
 class CandidatoController {
   /**
@@ -237,44 +248,48 @@ class CandidatoController {
     }
 
     try {
-      const candidato = new Candidato({
-        cpf: dadosCandidato.cpf,
-        nome: dadosCandidato.nome,
-        email: dadosCandidato.email,
-        telefone: dadosCandidato.telefone,
-        // dt_nascimento: dadosCandidato.dt_nascimento,
-        // rg: dadosCandidato.rg,
-        // endereco: dadosCandidato.endereco,
-        cargo: dadosCandidato.cargo,
-        funcao: dadosCandidato.funcao,
-        matricula: dadosCandidato.matricula,
-        // graduacao: dadosCandidato.graduacao,
-        //curso_graduacao: dadosCandidato.curso_graduacao,
-        //pos_graduacao: dadosCandidato.pos_graduacao,
-        //curso_pos_graduacao: dadosCandidato.curso_pos_graduacao,
-        // mestrado: dadosCandidato.mestrado,
-        // curso_mestrado: dadosCandidato.curso_mestrado,
-        // doutorado: dadosCandidato.doutorado,
-        // curso_doutorado: dadosCandidato.curso_doutorado,
-        curso_gestor: dadosCandidato.curso_gestor,
-        obs_curso_gestor: dadosCandidato.obs_curso_gestor,
-        //outros_cursos: dadosCandidato.outros_cursos,
-        data_entrada_inst: dadosCandidato.data_entrada_inst,
-        data_entrada_docencia: dadosCandidato.data_entrada_docencia,
-        tempo_modulacao: calculaTempo(
-          moment(dadosCandidato.data_entrada_inst).format("DD/MM/YYYY")
-        ),
-        tempo_docencia: calculaTempo(
-          moment(dadosCandidato.data_entrada_docencia).format("DD/MM/YYYY")
-        ),
-        numero_candidato: dadosCandidato.numero_candidato,
-        protocolo: `EDU${numRandom}2021`,
-        zona: dadosCandidato.zona,
-      });
+      if (cadastroAberto) {
+        const candidato = new Candidato({
+          cpf: dadosCandidato.cpf,
+          nome: dadosCandidato.nome,
+          email: dadosCandidato.email,
+          telefone: dadosCandidato.telefone,
+          // dt_nascimento: dadosCandidato.dt_nascimento,
+          // rg: dadosCandidato.rg,
+          // endereco: dadosCandidato.endereco,
+          cargo: dadosCandidato.cargo,
+          funcao: dadosCandidato.funcao,
+          matricula: dadosCandidato.matricula,
+          // graduacao: dadosCandidato.graduacao,
+          //curso_graduacao: dadosCandidato.curso_graduacao,
+          //pos_graduacao: dadosCandidato.pos_graduacao,
+          //curso_pos_graduacao: dadosCandidato.curso_pos_graduacao,
+          // mestrado: dadosCandidato.mestrado,
+          // curso_mestrado: dadosCandidato.curso_mestrado,
+          // doutorado: dadosCandidato.doutorado,
+          // curso_doutorado: dadosCandidato.curso_doutorado,
+          curso_gestor: dadosCandidato.curso_gestor,
+          obs_curso_gestor: dadosCandidato.obs_curso_gestor,
+          //outros_cursos: dadosCandidato.outros_cursos,
+          data_entrada_inst: dadosCandidato.data_entrada_inst,
+          data_entrada_docencia: dadosCandidato.data_entrada_docencia,
+          tempo_modulacao: calculaTempo(
+            moment(dadosCandidato.data_entrada_inst).format("DD/MM/YYYY")
+          ),
+          tempo_docencia: calculaTempo(
+            moment(dadosCandidato.data_entrada_docencia).format("DD/MM/YYYY")
+          ),
+          numero_candidato: dadosCandidato.numero_candidato,
+          protocolo: `EDU${numRandom}2021`,
+          zona: dadosCandidato.zona,
+        });
 
-      await candidato.save();
+        await candidato.save();
 
-      return res.send({ candidato });
+        return res.send({ candidato });
+      } else {
+        res.send("Desculpe, o cadastro está fechado.");
+      }
     } catch (e) {
       console.log(e);
       res.status(422).json({ errors: "CPF já consta no banco" });
