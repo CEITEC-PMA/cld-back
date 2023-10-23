@@ -119,13 +119,11 @@ class CandidatoController {
 
   //GET/candidatoZona/:zonaId
   async candidatoZona(req, res, next) {
-    console.log(req.params.zonaId);
     try {
       const candidatos = await Candidato.find({
         zona: req.params.zonaId,
         deletado: false,
       });
-      console.log(candidatos);
       return res.send({ candidatos });
     } catch (e) {
       next(e);
@@ -184,6 +182,7 @@ class CandidatoController {
   async showSuperAdm(req, res, next) {
     try {
       const candidatos = await Candidato.find({})
+        .populate("zona")
         .collation({ locale: "en", strength: 1 })
         .sort({ nome: 1 });
       return res.send({ candidatos });
