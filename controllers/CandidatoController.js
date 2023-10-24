@@ -359,6 +359,7 @@ class CandidatoController {
       numero_candidato,
       foto,
       aprovado,
+      justificativa,
     } = req.body;
     try {
       const candidato = await Candidato.findById(req.params.id);
@@ -368,6 +369,7 @@ class CandidatoController {
       if (telefone) candidato.telefone = telefone;
       if (endereco) candidato.endereco = endereco;
       if (rg) candidato.rg = rg;
+      if (justificativa) candidato.justificativa = justificativa;
       if (aprovado) candidato.aprovado = aprovado;
       if (dt_nascimento) candidato.dt_nascimento = dt_nascimento;
       if (cargo) candidato.cargo = cargo;
