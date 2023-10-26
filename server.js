@@ -7,6 +7,10 @@ const mongoose = require("mongoose");
 const morgan = require("morgan");
 const cors = require("cors");
 const path = require("path");
+const dotenv = require("dotenv");
+
+//IMPORTANDO .ENV
+dotenv.config({ path: "./.env" });
 
 // START
 const app = express();
