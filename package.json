@@ -7,7 +7,8 @@
     "test": "mocha --timeout 2000 --exit",
     "start": "nodemon",
     "dev": "set NODE_ENV=development&&nodemon server.js --name=\"apiEleicao\"",
-    "build": "export NODE_ENV=production&&pm2 start server.js --name=\"apiEleicao\""
+    "build": "export NODE_ENV=production&&pm2 start server.js --name=\"apiEleicao\"",
+    "build:teste": "export NODE_ENV=production&&pm2 start server.js --name=\"apiEleicaoTeste\""
   },
   "author": "Guilherme de Sousa Mendes",
   "license": "ISC",
