@@ -30,9 +30,6 @@ app.use(
   express.static(path.resolve(__dirname, "tmp", "doc__eleicao", "candidatos"))
 );
 
-// SETUP MONGODB
-const dbs = require("./config/database");
-
 // VERSÃO TESTE
 const dbURI = isProduction ? process.env.DB_PRODUCTION : process.env.DB_LOCAL;
 mongoose.connect(dbURI, {
