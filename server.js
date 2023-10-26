@@ -34,7 +34,7 @@ app.use(
 const dbs = require("./config/database");
 
 // VERSÃO TESTE
-const dbURI = isProduction ? dbs.dbProduction : dbs.dbTeste;
+const dbURI = isProduction ? process.env.DB_PRODUCTION : process.env.DB_LOCAL;
 mongoose.connect(dbURI, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
