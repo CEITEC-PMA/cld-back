@@ -102,6 +102,9 @@ const CandidatoSchema = new mongoose.Schema(
     tempo_docencia: {
       type: String,
     },
+    textoRecurso: {
+      type: String,
+    },
     email: {
       type: String,
       lowercase: true,
@@ -284,6 +287,13 @@ const CandidatoSchema = new mongoose.Schema(
           },
           default: {},
         },
+        doc_recurso: {
+          type: {
+            file: { type: String, required: true },
+            original_file: { type: String, required: true },
+          },
+          default: {},
+        },
       },
       default: {
         doc_01: { file: "", original_file: "" },
@@ -307,6 +317,7 @@ const CandidatoSchema = new mongoose.Schema(
         doc_19: { file: "", original_file: "" },
         doc_20: { file: "", original_file: "" },
         doc_21: { file: "", original_file: "" },
+        doc_recurso: { file: "", original_file: "" },
       },
     },
 

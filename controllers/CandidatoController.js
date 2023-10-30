@@ -360,12 +360,14 @@ class CandidatoController {
       foto,
       aprovado,
       justificativa,
+      textoRecurso,
     } = req.body;
     try {
       const candidato = await Candidato.findById(req.params.id);
       if (nome) candidato.nome = nome;
       if (email) candidato.email = email;
       if (cpf) candidato.cpf = cpf;
+      if (textoRecurso) candidato.textoRecurso = textoRecurso;
       if (telefone) candidato.telefone = telefone;
       if (endereco) candidato.endereco = endereco;
       if (rg) candidato.rg = rg;
@@ -435,6 +437,7 @@ class CandidatoController {
         "doc_19",
         "doc_20",
         "doc_21",
+        "doc_recurso",
       ];
 
       if (!candidato.docs[categoria]) {
