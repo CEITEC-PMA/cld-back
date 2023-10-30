@@ -1,17 +1,21 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
-const Usuario = mongoose.model('Usuario');
-const Funcionario = mongoose.model('Funcionario');
-const Zona = mongoose.model('Zona');
+const Usuario = mongoose.model("Usuario");
+const Funcionario = mongoose.model("Funcionario");
+const Zona = mongoose.model("Zona");
 
 class FuncionarioController {
-
   //ADM
   // get /admin
   async indexAdm(req, res, next) {
     try {
-      const zonaInep = await Zona.findOne({ _id: req.payload.id })
-      const funcionarios = await Funcionario.find({ deletado: false, inep: zonaInep.inep }).collation({ locale: "en", strength: 1 }).sort({ nome: 1 });
+      const zonaInep = await Zona.findOne({ _id: req.payload.id });
+      const funcionarios = await Funcionario.find({
+        deletado: false,
+        inep: zonaInep.inep,
+      })
+        .collation({ locale: "en", strength: 1 })
+        .sort({ nome: 1 });
       return res.send({ funcionarios });
     } catch (e) {
       next(e);
@@ -20,7 +24,7 @@ class FuncionarioController {
 
   async showSuperAdm(req, res, next) {
     try {
-      const zonaInep = await Zona.findOne({ _id: req.params.id })
+      const zonaInep = await Zona.findOne({ _id: req.params.id });
       const funcionarios = await Funcionario.find({ inep: zonaInep.inep });
       return res.send({ funcionarios });
     } catch (e) {
@@ -28,15 +32,15 @@ class FuncionarioController {
     }
   }
 
-  async funcionarioInep(req, res, next) {
+  async funcionarioZona(req, res, next) {
+    console.log(req.payload.id);
     try {
-      const funcionarios = await Funcionario.find({ inep: req.params.inep });
+      const funcionarios = await Funcionario.find({ zona: req.payload.id });
       return res.send({ funcionarios });
     } catch (e) {
       next(e);
     }
   }
-
 
   //GERAR NUMERO DE IDESCOLA
 
@@ -57,28 +61,40 @@ class FuncionarioController {
   // // get /adm/:id
   async showAdm(req, res, next) {
     try {
-      const funcionario = await Funcionario
-        .findOne({ idescola: req.payload.id, _id: req.params.id })
-      return res.send({ funcionario })
+      const funcionario = await Funcionario.findOne({
+        idescola: req.payload.id,
+        _id: req.params.id,
+      });
+      return res.send({ funcionario });
     } catch (e) {
-      next(e)
+      next(e);
     }
   }
 
   async showAll(req, res, next) {
     try {
-      var lista = []
-      await Zona.find({}, '_id inep').then(async response => {
-        await Promise.all(response.map(async item => {
-          const funcionarioTotais = await Funcionario.count({ inep: item.inep })
-          const funcionarioVotantes = await Funcionario.count({ inep: item.inep })
-          lista.push({ unidade: item, qtd_alunos_total: funcionarioTotais, qtd_alunos_votantes: funcionarioVotantes })
-          return lista
-        }))
-      })
-      return res.send({ lista })
+      var lista = [];
+      await Zona.find({}, "_id inep").then(async (response) => {
+        await Promise.all(
+          response.map(async (item) => {
+            const funcionarioTotais = await Funcionario.count({
+              inep: item.inep,
+            });
+            const funcionarioVotantes = await Funcionario.count({
+              inep: item.inep,
+            });
+            lista.push({
+              unidade: item,
+              qtd_alunos_total: funcionarioTotais,
+              qtd_alunos_votantes: funcionarioVotantes,
+            });
+            return lista;
+          })
+        );
+      });
+      return res.send({ lista });
     } catch (e) {
-      next(e)
+      next(e);
     }
   }
 
@@ -87,13 +103,11 @@ class FuncionarioController {
     const { offset, limit } = req.query;
     const zona = req.payload.id;
     try {
-      const search = new RegExp(req.params.search, 'i');
-      const funcionarios = await Funcionario.paginate(
-        {
-          idescola: zona,
-          nome: { $regex: search }
-        }
-      );
+      const search = new RegExp(req.params.search, "i");
+      const funcionarios = await Funcionario.paginate({
+        idescola: zona,
+        nome: { $regex: search },
+      });
 
       // const funcionarios = await Funcionario.find({ idescola: zona, nome: { $regex: search } });
       return res.send({ funcionarios });
@@ -103,15 +117,9 @@ class FuncionarioController {
   }
 
   async update(req, res, next) {
-    const {
-      nome,
-      inep,
-      dataNascimento,
-      cpf,
-      cargo
-    } = req.body;
+    const { nome, inep, dataNascimento, cpf, cargo } = req.body;
     try {
-      const funcionario = await Funcionario.findById(req.params.id)
+      const funcionario = await Funcionario.findById(req.params.id);
       if (nome) funcionario.nome = nome;
       if (inep) funcionario.inep = inep;
       if (cpf) funcionario.cpf = cpf;
@@ -122,37 +130,39 @@ class FuncionarioController {
 
       return res.send({ funcionario });
     } catch (e) {
-      next(e)
+      next(e);
     }
   }
 
   async addFuncionario(req, res, next) {
     try {
-      const { funcionarios } = req.body
-      funcionarios.map(async item => {
-        const { nome, inep, cargo, } = item
-        const funcionario = new Funcionario({ nome, inep, cargo });
-        funcionario.save()
-      })
-      return res.send({ message: "funcionarios adicionados" })
+      const { funcionarios } = req.body;
+      await Promise.all(
+        funcionarios.map(async (item) => {
+          const { nome, zona, cargo } = item;
+          const funcionario = new Funcionario({ nome, zona, cargo });
+          funcionario.save();
+        })
+      );
+      return res.send({ message: "funcionarios adicionados" });
     } catch (e) {
-      console.log(e)
-      next(e)
+      console.log(e);
+      next(e);
     }
   }
 
   async remove(req, res, next) {
     try {
-      const { ids, deletado } = req.body
-      ids.map(async item => {
-        const funcionario = await Funcionario.findOne(item)
-        funcionario.deletado = deletado
-        await funcionario.save()
-      })
-      return res.send({ deletado: false })
+      const { ids, deletado } = req.body;
+      ids.map(async (item) => {
+        const funcionario = await Funcionario.findOne(item);
+        funcionario.deletado = deletado;
+        await funcionario.save();
+      });
+      return res.send({ deletado: false });
     } catch (e) {
-      console.log(e)
-      next(e)
+      console.log(e);
+      next(e);
     }
   }
 }
