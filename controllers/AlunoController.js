@@ -20,7 +20,9 @@ class AlunoController {
 
   async alunoZona(req, res, next) {
     try {
-      const alunos = await Aluno.find({ zona: req.payload.id });
+      const alunos = await Aluno.find({ zona: req.payload.id }).sort({
+        nome: 1,
+      });
 
       return res.send({ alunos });
     } catch (e) {
