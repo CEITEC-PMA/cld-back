@@ -22,30 +22,30 @@ const AlunoSchema = new mongoose.Schema(
     serie: {
       type: String,
     },
-    turma: {
+    // turma: {
+    //   type: String,
+    // },
+    responsavel1: {
       type: String,
     },
-    mae: {
+    responsavel2: {
       type: String,
     },
-    pai: {
+    responsavel3: {
       type: String,
     },
-    responsavel: {
-      type: String,
-    },
-    cpf_filiacao1: {
-      type: String,
-    },
-    cpf_filiacao2: {
-      type: String,
-    },
-    cpf_responsavel: {
-      type: String,
-    },
-    status_matricula: {
-      type: String,
-    },
+    // cpf_filiacao1: {
+    //   type: String,
+    // },
+    // cpf_filiacao2: {
+    //   type: String,
+    // },
+    // cpf_responsavel: {
+    //   type: String,
+    // },
+    // status_matricula: {
+    //   type: String,
+    // },
     aluno_votou: {
       type: Boolean,
 

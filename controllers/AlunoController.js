@@ -142,26 +142,24 @@ class AlunoController {
           const {
             nome,
             inep,
-            mae,
-            pai,
-            responsavel,
+            responsavel1,
+            responsavel2,
+            responsavel3,
             serie,
-            turma,
             votante,
             zona,
           } = item;
           const aluno = new Aluno({
             nome,
             inep,
-            mae,
-            pai,
-            responsavel,
+            responsavel1,
+            responsavel2,
+            responsavel3,
             serie,
-            turma,
             votante,
             zona,
           });
-          aluno.save();
+          aluno.save().catch((e) => console.log(e));
         })
       );
       return res.send({ message: "alunos adicionados" });
