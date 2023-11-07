@@ -105,6 +105,9 @@ const CandidatoSchema = new mongoose.Schema(
     textoRecurso: {
       type: String,
     },
+    respostaComissao: {
+      type: String,
+    },
     email: {
       type: String,
       lowercase: true,

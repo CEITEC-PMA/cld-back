@@ -361,11 +361,13 @@ class CandidatoController {
       aprovado,
       justificativa,
       textoRecurso,
+      respostaComissao,
     } = req.body;
     try {
       const candidato = await Candidato.findById(req.params.id);
       if (nome) candidato.nome = nome;
       if (email) candidato.email = email;
+      if (respostaComissao) candidato.respostaComissao = respostaComissao;
       if (cpf) candidato.cpf = cpf;
       if (textoRecurso) candidato.textoRecurso = textoRecurso;
       if (telefone) candidato.telefone = telefone;
