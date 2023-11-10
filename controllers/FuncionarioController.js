@@ -9,10 +9,9 @@ class FuncionarioController {
   // get /admin
   async indexAdm(req, res, next) {
     try {
-      const zonaInep = await Zona.findOne({ _id: req.payload.id });
       const funcionarios = await Funcionario.find({
         deletado: false,
-        inep: zonaInep.inep,
+        zona: req.payload.id,
       })
         .collation({ locale: "en", strength: 1 })
         .sort({ nome: 1 });
