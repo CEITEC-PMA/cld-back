@@ -10,7 +10,7 @@ class AlunoController {
       const zonaInep = await Zona.findOne({ _id: req.payload.id });
       const alunos = await Aluno.find({ deletado: false, inep: zonaInep.inep })
         .collation({ locale: "en", strength: 1 })
-        .sort({ nome: 1 });
+        .sort({ serie: 1, nome: 1 });
 
       return res.send({ alunos });
     } catch (e) {
