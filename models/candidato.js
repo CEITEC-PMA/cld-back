@@ -7,7 +7,7 @@ const CandidatoSchema = new mongoose.Schema(
   {
     cpf: {
       type: String,
-      unique: [true, "CPF já consta no banco"],
+      // unique: [true, "CPF já consta no banco"],
       required: [true, "não pode ficar vazio."],
     },
     nome: {
