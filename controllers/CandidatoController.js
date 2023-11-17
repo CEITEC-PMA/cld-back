@@ -96,6 +96,43 @@ class CandidatoController {
     }
   }
 
+  async addCandidatoLote(req, res, next) {
+    try {
+      const { candidatos } = req.body;
+      await Promise.all(
+        candidatos.map(async (item) => {
+          const {
+            nome,
+            cpf,
+            data_entrada_docencia,
+            data_entrada_inst,
+            email,
+            funcao,
+            telefone,
+            zona,
+            cargo,
+          } = item;
+          const candidato = new Candidato({
+            nome,
+            cpf,
+            data_entrada_docencia,
+            data_entrada_inst,
+            email,
+            funcao,
+            telefone,
+            zona,
+            cargo,
+          });
+          candidato.save().catch((e) => console.log(e));
+        })
+      );
+      return res.send({ message: "candidatos adicionados" });
+    } catch (e) {
+      console.log(e);
+      next(e);
+    }
+  }
+
   //GET /:id
   async showAll(req, res, next) {
     const { offset, limit } = req.query;

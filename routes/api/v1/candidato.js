@@ -28,6 +28,12 @@ router.post(
   validate(CandidatoValidation.store),
   candidatoController.store
 ); //testado
+router.post(
+  "/candidatoLote",
+  auth.required,
+  ZonaValidation.adm,
+  candidatoController.addCandidatoLote
+); //testado
 router.put(
   "/images/:id",
   auth.required,
