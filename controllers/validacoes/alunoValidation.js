@@ -29,7 +29,6 @@ const AlunoValidation = {
       responsavel1: Joi.string().required(),
       responsavel2: Joi.string().optional(),
       responsavel3: Joi.string().optional(),
-      inep: Joi.string().required(),
       serie: Joi.string().required(),
     },
 

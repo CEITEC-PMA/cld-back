@@ -136,13 +136,12 @@ class AlunoController {
 
   async addAluno(req, res, next) {
     try {
-      const { nome, inep, responsavel1, responsavel2, responsavel3, serie } =
+      const { nome, responsavel1, responsavel2, responsavel3, serie } =
         req.body;
       const { id: zona } = req.user;
 
       const aluno = new Aluno({
         nome,
-        inep,
         responsavel1,
         responsavel2,
         responsavel3,
