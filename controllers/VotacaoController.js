@@ -1,32 +1,143 @@
-const mongoose = require('mongoose');
-const moment = require('moment')
-const Votacao = mongoose.model('Votacao');
-const Usuario = mongoose.model('Usuario');
-const fs = require('fs')
-const path = require('path')
-const { promisify } = require('util')
+const mongoose = require("mongoose");
+const moment = require("moment");
+const Votacao = mongoose.model("Votacao");
+const Aluno = mongoose.model("Aluno");
+const Funcionario = mongoose.model("Funcionario");
+const Usuario = mongoose.model("Usuario");
+const fs = require("fs");
+const path = require("path");
+const { promisify } = require("util");
 
-const EmailController = require('./EmailController');
+const EmailController = require("./EmailController");
 
 class CandidatoController {
-
   /**
-    *
-    * ADM
-    *
-    */
-
+   *
+   * ADM
+   *
+   */
 
   //GET /:id
   async showAll(req, res, next) {
-    const zona = req.payload.id
+    const zona = req.payload.id;
     try {
-      const votacao = await Votacao.findOne({ zona: zona })
-        .populate({
-          path: 'voto',
-          populate: { path: 'candidato' }
-        });
-      return res.send({ votacao });
+      // const votacao = await Votacao.findOne({ zona: zona }).populate({
+      //   path: "voto",
+      //   populate: { path: "candidato" },
+      // });
+      const votacao = await Votacao.aggregate([
+        {
+          $match: {
+            zona: mongoose.Types.ObjectId(zona),
+          },
+        },
+        {
+          $lookup: {
+            from: "votos",
+            localField: "voto",
+            foreignField: "_id",
+            as: "votos",
+          },
+        },
+        {
+          $unwind: "$votos",
+        },
+        {
+          $lookup: {
+            from: "candidatos",
+            localField: "votos.candidato",
+            foreignField: "_id",
+            as: "candidato",
+          },
+        },
+        {
+          $unwind: "$candidato",
+        },
+        {
+          $project: {
+            tipo_voto: "$votos.tipo_voto",
+            numero_candidato: "$candidato.numero_candidato",
+          },
+        },
+      ]);
+
+      const alunos = await Aluno.find({ zona: zona });
+
+      const funcionarios = await Funcionario.find({ zona: zona });
+
+      const quantidadeAlunosVotantes = alunos.filter(
+        (aluno) => aluno.votante === true
+      ).length;
+
+      const quantidadeAlunosNaoVotantes = alunos.filter(
+        (aluno) => aluno.votante === false
+      ).length;
+
+      const quantidadeFuncionarios = funcionarios.length;
+
+      const alunosVotaram = alunos.filter(
+        (aluno) => aluno.aluno_votou === true
+      ).length;
+
+      const funcionariosVotaram = funcionarios.filter(
+        (Funcionario) => Funcionario.votou === true
+      ).length;
+
+      const respAlunosVotantesVotaram = alunos.filter(
+        (aluno) => aluno.votante === true && aluno.resp_votou === true
+      ).length;
+
+      const respAlunosNaoVotantesVotaram = alunos.filter(
+        (aluno) => aluno.votante === false && aluno.resp_votou === true
+      ).length;
+
+      const processarVotos = (tipo) => {
+        const votosTipo = votacao.filter((voto) => voto.tipo_voto === tipo);
+        const candidato_um = votosTipo.filter(
+          (voto) => voto.numero_candidato === 1
+        ).length;
+        const candidato_dois = votosTipo.filter(
+          (voto) => voto.numero_candidato === 2
+        ).length;
+        const branco = votosTipo.filter(
+          (voto) => voto.numero_candidato === 3
+        ).length;
+        const nulo = votosTipo.filter(
+          (voto) => voto.numero_candidato === 4
+        ).length;
+
+        return {
+          candidato_um,
+          candidato_dois,
+          branco,
+          nulo,
+        };
+      };
+
+      const votosRespAlunosVotantes = processarVotos("respAlunoVotante");
+      const votosRespAlunosNaoVotantes = processarVotos("respAlunoNaoVotante");
+      const votosAlunos = processarVotos("aluno");
+      const votosFuncionarios = processarVotos("func");
+
+      console.log(
+        funcionarios.filter((Funcionario) => Funcionario.votou === true)
+      );
+
+      return res.send({
+        quantidadeAlunosVotantes,
+        quantidadeAlunosNaoVotantes,
+        quantidadeFuncionarios,
+        alunosVotaram,
+        funcionariosVotaram,
+        respAlunosVotantesVotaram,
+        respAlunosNaoVotantesVotaram,
+        votos: {
+          votosRespAlunosVotantes,
+          votosRespAlunosNaoVotantes,
+          votosAlunos,
+          votosFuncionarios,
+        },
+      });
     } catch (e) {
       next(e);
     }
@@ -34,11 +145,10 @@ class CandidatoController {
 
   async showAdm(req, res, next) {
     try {
-      const votacao = await Votacao.findOne({ zona: req.params.id })
-        .populate({
-          path: 'voto',
-          populate: { path: 'candidato' }
-        });
+      const votacao = await Votacao.findOne({ zona: req.params.id }).populate({
+        path: "voto",
+        populate: { path: "candidato" },
+      });
       return res.send({ votacao });
     } catch (e) {
       next(e);
@@ -47,17 +157,20 @@ class CandidatoController {
 
   async showVotacaoFinalizada(req, res, next) {
     try {
-      const votacao = await Votacao.find({ status: { $ne: null } }, 'resultado status')
+      const votacao = await Votacao.find(
+        { status: { $ne: null } },
+        "resultado status"
+      )
         .populate({
-          path: 'resultado.candidato',
-          model: 'Candidato',
-          select: 'nome foto zona cpf'
-        }).populate({
-          path: 'zona',
-          model: 'Zona',
-          select: 'nome'
-        }
-        )
+          path: "resultado.candidato",
+          model: "Candidato",
+          select: "nome foto zona cpf",
+        })
+        .populate({
+          path: "zona",
+          model: "Zona",
+          select: "nome",
+        });
       return res.send({ votacao });
     } catch (e) {
       next(e);
@@ -65,20 +178,20 @@ class CandidatoController {
   }
 
   async finalizarVotacao(req, res, next) {
-    const votacao = await Votacao.findOne({ zona: req.params.id })
+    const votacao = await Votacao.findOne({ zona: req.params.id });
 
-    const { candidato, porcentagem, status, confirmado } = req.body
+    const { candidato, porcentagem, status, confirmado } = req.body;
     try {
-      votacao.confirmado = confirmado
-      votacao.resultado.candidato = candidato
-      votacao.resultado.porcentagem = porcentagem
-      votacao.status = status
-      console.log(votacao)
-      votacao.markModified('resultado')
-      votacao.save()
-      res.send({ votacao })
+      votacao.confirmado = confirmado;
+      votacao.resultado.candidato = candidato;
+      votacao.resultado.porcentagem = porcentagem;
+      votacao.status = status;
+      console.log(votacao);
+      votacao.markModified("resultado");
+      votacao.save();
+      res.send({ votacao });
     } catch (e) {
-      next(e)
+      next(e);
     }
   }
 
@@ -124,21 +237,20 @@ class CandidatoController {
   //   }
   // }
 
-
   async store(req, res, next) {
     const zona = req.payload.id;
 
-    const hora = new Date
-    const dataAtual = moment(hora).format('DD/MM/YYYY HH:mm:ss')
+    const hora = new Date();
+    const dataAtual = moment(hora).format("DD/MM/YYYY HH:mm:ss");
     const votacao = new Votacao({
       zona: zona,
       iniciada: dataAtual,
-    })
+    });
     try {
       await votacao.save();
       return res.send({ votacao });
     } catch (e) {
-      next(e)
+      next(e);
     }
   }
 
@@ -176,7 +288,6 @@ class CandidatoController {
   //     next(e)
   //   }
   // }
-
 }
 
-module.exports = CandidatoController
+module.exports = CandidatoController;
