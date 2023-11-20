@@ -138,7 +138,7 @@ class AlunoController {
     try {
       const { nome, responsavel1, responsavel2, responsavel3, serie } =
         req.body;
-      const { id: zona } = req.user;
+      const zonaId = req.payload.id;
 
       const aluno = new Aluno({
         nome,
@@ -146,7 +146,7 @@ class AlunoController {
         responsavel2,
         responsavel3,
         serie,
-        zona,
+        zona: zonaId,
       });
 
       await aluno
