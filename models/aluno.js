@@ -14,6 +14,7 @@ const AlunoSchema = new mongoose.Schema(
     },
     nome: {
       type: String,
+      uppercase: true,
     },
     // dataNascimento: {
     //   type: Date,
@@ -27,12 +28,15 @@ const AlunoSchema = new mongoose.Schema(
     // },
     responsavel1: {
       type: String,
+      uppercase: true,
     },
     responsavel2: {
       type: String,
+      uppercase: true,
     },
     responsavel3: {
       type: String,
+      uppercase: true,
     },
     // cpf_filiacao1: {
     //   type: String,
