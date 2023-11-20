@@ -119,7 +119,7 @@ class AlunoController {
     }
   }
 
-  async remove(req, res, next) {
+  async removeAll(req, res, next) {
     try {
       const { ids, deletado } = req.body;
       ids.map(async (item) => {
@@ -128,6 +128,21 @@ class AlunoController {
         await aluno.save();
       });
       return res.send({ deletado: false });
+    } catch (e) {
+      console.log(e);
+      next(e);
+    }
+  }
+
+  async remove(req, res, next) {
+    try {
+      const { id } = req.params;
+      console.log(id);
+      const aluno = await Aluno.findById(id);
+      if (!aluno) throw new Error("aluno não encontrado");
+      aluno.deletado = true;
+      await aluno.save();
+      return res.send({ deletado: true });
     } catch (e) {
       console.log(e);
       next(e);

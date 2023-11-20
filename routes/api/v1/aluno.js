@@ -52,7 +52,14 @@ router.post(
 
 // router.post("/", auth.required, AdmValidation.adm, validate(ZonaValidation.store), alunoController.store); //testado
 // router.put("/:id", auth.required, ZonaValidation.adm, validate(AlunoValidation.update), alunoController.update); //testado
-router.delete("/", alunoController.remove); //testado
+router.patch(
+  "/:id",
+  auth.required,
+  ZonaValidation.adm,
+  validate(AlunoValidation.remove),
+  alunoController.remove
+); //testado
+
 router.delete("/removerPorNome", alunoController.removeNome); //testado
 
 // // POPULAÇÃO

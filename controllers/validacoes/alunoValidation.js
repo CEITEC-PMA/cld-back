@@ -31,14 +31,11 @@ const AlunoValidation = {
       responsavel3: Joi.string().optional(),
       serie: Joi.string().required(),
     },
+  },
 
-    remove: {
-      query: {
-        zona: Joi.string().alphanum().length(24).required(),
-      },
-      params: {
-        id: Joi.string().alphanum().length(24).required(),
-      },
+  remove: {
+    params: {
+      id: Joi.string().alphanum().length(24).required(),
     },
   },
 };
