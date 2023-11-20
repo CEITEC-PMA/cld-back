@@ -51,7 +51,14 @@ router.post(
 ); //testado
 
 // router.post("/", auth.required, AdmValidation.adm, validate(ZonaValidation.store), alunoController.store); //testado
-// router.put("/:id", auth.required, ZonaValidation.adm, validate(AlunoValidation.update), alunoController.update); //testado
+router.put(
+  "/:id",
+  auth.required,
+  ZonaValidation.adm,
+  validate(AlunoValidation.update),
+  alunoController.update
+); //testado
+
 router.patch(
   "/:id",
   auth.required,

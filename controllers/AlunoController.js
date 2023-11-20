@@ -137,7 +137,6 @@ class AlunoController {
   async remove(req, res, next) {
     try {
       const { id } = req.params;
-      console.log(id);
       const aluno = await Aluno.findById(id);
       if (!aluno) throw new Error("aluno não encontrado");
       aluno.deletado = true;
@@ -168,6 +167,31 @@ class AlunoController {
         .save()
         .then(() => res.send({ message: "Aluno adicionado" }))
         .catch((e) => console.log(e));
+    } catch (e) {
+      console.log(e);
+      next(e);
+    }
+  }
+
+  async update(req, res, next) {
+    try {
+      const { nome, responsavel1, responsavel2, responsavel3, serie } =
+        req.body;
+      const zonaId = req.payload.id;
+      const { id } = req.params;
+      await Aluno.findByIdAndUpdate(
+        id,
+        {
+          nome,
+          responsavel1,
+          responsavel2,
+          responsavel3,
+          serie,
+          zona: zonaId,
+        },
+        { new: true }
+      );
+      await res.send({ message: "Aluno alterado" });
     } catch (e) {
       console.log(e);
       next(e);

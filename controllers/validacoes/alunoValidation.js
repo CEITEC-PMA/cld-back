@@ -33,6 +33,19 @@ const AlunoValidation = {
     },
   },
 
+  update: {
+    params: {
+      id: Joi.string().alphanum().length(24).required(),
+    },
+    body: {
+      nome: Joi.string().required(),
+      responsavel1: Joi.string().required(),
+      responsavel2: Joi.string().optional(),
+      responsavel3: Joi.string().optional(),
+      serie: Joi.string().required(),
+    },
+  },
+
   remove: {
     params: {
       id: Joi.string().alphanum().length(24).required(),
