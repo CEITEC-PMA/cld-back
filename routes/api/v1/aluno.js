@@ -41,7 +41,15 @@ router.get(
   ZonaValidation.adm,
   alunoController.searchAlunos
 );
-router.post("/", alunoController.addAluno); //testado
+
+router.post(
+  "/",
+  auth.required,
+  ZonaValidation.adm,
+  validate(AlunoValidation.store),
+  alunoController.addAluno
+); //testado
+
 // router.post("/", auth.required, AdmValidation.adm, validate(ZonaValidation.store), alunoController.store); //testado
 // router.put("/:id", auth.required, ZonaValidation.adm, validate(AlunoValidation.update), alunoController.update); //testado
 router.delete("/", alunoController.remove); //testado

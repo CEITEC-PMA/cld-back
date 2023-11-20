@@ -136,6 +136,32 @@ class AlunoController {
 
   async addAluno(req, res, next) {
     try {
+      const { nome, inep, responsavel1, responsavel2, responsavel3, serie } =
+        req.body;
+      const { id: zona } = req.user;
+
+      const aluno = new Aluno({
+        nome,
+        inep,
+        responsavel1,
+        responsavel2,
+        responsavel3,
+        serie,
+        zona,
+      });
+
+      await aluno
+        .save()
+        .then(() => res.send({ message: "Aluno adicionado" }))
+        .catch((e) => console.log(e));
+    } catch (e) {
+      console.log(e);
+      next(e);
+    }
+  }
+
+  async addAlunos(req, res, next) {
+    try {
       const { alunos } = req.body;
       await Promise.all(
         alunos.map(async (item) => {
