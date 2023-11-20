@@ -6,7 +6,6 @@ function getTokenFromHeader(req) {
   if (!req.headers.authorization) return null;
   const token = req.headers.authorization.split(" ");
   if (token[0] !== "Bearer") return null;
-  req.user = jsonwebtoken.verify(token[1], secret);
   return token[1];
 }
 
