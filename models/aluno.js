@@ -23,6 +23,9 @@ const AlunoSchema = new mongoose.Schema(
     serie: {
       type: String,
     },
+    inep: {
+      type: String,
+    },
     // turma: {
     //   type: String,
     // },

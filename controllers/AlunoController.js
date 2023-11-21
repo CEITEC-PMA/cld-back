@@ -155,12 +155,13 @@ class AlunoController {
       const { nome, responsavel1, responsavel2, responsavel3, serie } =
         req.body;
       const zonaId = req.payload.id;
-
+      const { inep } = await Zona.findById(zonaId);
       const aluno = new Aluno({
         nome,
         responsavel1,
         responsavel2,
         responsavel3,
+        inep,
         serie,
         votante: seriesVotantes.includes(serie),
         zona: zonaId,
