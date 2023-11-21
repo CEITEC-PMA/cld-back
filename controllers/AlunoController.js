@@ -149,6 +149,8 @@ class AlunoController {
   }
 
   async addAluno(req, res, next) {
+    const seriesVotantes = ["5° ANO", "6° ANO", "7° ANO", "8° ANO"];
+
     try {
       const { nome, responsavel1, responsavel2, responsavel3, serie } =
         req.body;
@@ -160,6 +162,7 @@ class AlunoController {
         responsavel2,
         responsavel3,
         serie,
+        votante: seriesVotantes.includes(serie),
         zona: zonaId,
       });
 
