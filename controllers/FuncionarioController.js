@@ -149,7 +149,7 @@ class FuncionarioController {
 
       await funcionario
         .save()
-        .then(() => res.send({ message: "Funcionario adicionado" }))
+        .then(() => res.status(200).send({ message: "Funcionario adicionado" }))
         .catch((e) => console.log(e));
     } catch (e) {
       console.log(e);
