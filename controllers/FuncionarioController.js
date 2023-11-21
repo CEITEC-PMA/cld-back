@@ -116,16 +116,20 @@ class FuncionarioController {
   }
 
   async update(req, res, next) {
-    const { nome, inep, dataNascimento, cpf, cargo } = req.body;
+    const { nome, cargo } = req.body;
+    const id = req.params.id;
+    const zonaId = req.payload.id;
+    console.log(zonaId);
     try {
-      const funcionario = await Funcionario.findById(req.params.id);
-      if (nome) funcionario.nome = nome;
-      if (inep) funcionario.inep = inep;
-      if (cpf) funcionario.cpf = cpf;
-      if (dataNascimento) funcionario.dataNascimento = dataNascimento;
-      if (cargo) funcionario.cargo = cargo;
-
-      await funcionario.save();
+      const funcionario = await Funcionario.findByIdAndUpdate(
+        id,
+        {
+          nome,
+          cargo,
+          zona: zonaId,
+        },
+        { new: true }
+      );
 
       return res.send({ funcionario });
     } catch (e) {
@@ -135,15 +139,18 @@ class FuncionarioController {
 
   async addFuncionario(req, res, next) {
     try {
-      const { funcionarios } = req.body;
-      await Promise.all(
-        funcionarios.map(async (item) => {
-          const { nome, zona, cargo } = item;
-          const funcionario = new Funcionario({ nome, zona, cargo });
-          funcionario.save();
-        })
-      );
-      return res.send({ message: "funcionarios adicionados" });
+      const { nome, cargo } = req.body;
+      const zonaId = req.payload.id;
+      const funcionario = new Funcionario({
+        nome,
+        cargo,
+        zona: zonaId,
+      });
+
+      await funcionario
+        .save()
+        .then(() => res.send({ message: "Funcionario adicionado" }))
+        .catch((e) => console.log(e));
     } catch (e) {
       console.log(e);
       next(e);

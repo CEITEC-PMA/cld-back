@@ -9,10 +9,6 @@ const FuncionarioSchema = new mongoose.Schema(
       type: String,
       required: [true, "não pode ficar vazio."],
     },
-    // inep: {
-    //   type: String,
-    //   required: [true, "não pode ficar vazio."]
-    // },
     zona: {
       type: Schema.Types.ObjectId,
       ref: "Zona",

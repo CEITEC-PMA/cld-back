@@ -49,13 +49,19 @@ router.get(
   AdmValidation.adm,
   funcionarioController.showSuperAdm
 );
-router.post("/", funcionarioController.addFuncionario); //testado
+router.post(
+  "/",
+  auth.required,
+  AdmValidation.adm,
+  validate(FuncionarioValidation.store),
+  funcionarioController.addFuncionario
+); //testado
 // router.post("/", auth.required, AdmValidation.adm, validate(ZonaValidation.store), funcionarioController.store); //testado
 router.put(
   "/:id",
   auth.required,
   AdmValidation.adm,
-  ZonaValidation.adm,
+  validate(FuncionarioValidation.update),
   funcionarioController.update
 ); //testado
 // router.delete("/:id", auth.required, AdmValidation.adm, validate(ZonaValidation.remove), funcionarioController.remove); //testado
