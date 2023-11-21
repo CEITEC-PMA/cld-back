@@ -110,7 +110,7 @@ class AlunoController {
   async showAdm(req, res, next) {
     try {
       const aluno = await Aluno.findOne({
-        idescola: req.payload.id,
+        zona: req.payload.id,
         _id: req.params.id,
       });
       return res.send({ aluno });
