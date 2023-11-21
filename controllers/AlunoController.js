@@ -149,17 +149,21 @@ class AlunoController {
   }
 
   async addAluno(req, res, next) {
+    const seriesVotantes = ["5° ANO", "6° ANO", "7° ANO", "8° ANO"];
+
     try {
       const { nome, responsavel1, responsavel2, responsavel3, serie } =
         req.body;
       const zonaId = req.payload.id;
-
+      const { inep } = await Zona.findById(zonaId);
       const aluno = new Aluno({
         nome,
         responsavel1,
         responsavel2,
         responsavel3,
+        inep,
         serie,
+        votante: seriesVotantes.includes(serie),
         zona: zonaId,
       });
 
