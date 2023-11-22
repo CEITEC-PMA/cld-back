@@ -304,6 +304,13 @@ const CandidatoSchema = new mongoose.Schema(
           },
           default: {},
         },
+        doc_recurso2: {
+          type: {
+            file: { type: String, required: true },
+            original_file: { type: String, required: true },
+          },
+          default: {},
+        },
       },
       default: {
         doc_01: { file: "", original_file: "" },
@@ -328,9 +335,9 @@ const CandidatoSchema = new mongoose.Schema(
         doc_20: { file: "", original_file: "" },
         doc_21: { file: "", original_file: "" },
         doc_recurso: { file: "", original_file: "" },
+        doc_recurso2: { file: "", original_file: "" },
       },
     },
-
     deletado: {
       type: Boolean,
       required: [true, "não pode ficar vazio."],
