@@ -52,7 +52,7 @@ router.get(
 router.post(
   "/",
   auth.required,
-  AdmValidation.adm,
+  ZonaValidation.adm,
   validate(FuncionarioValidation.store),
   funcionarioController.addFuncionario
 ); //testado
