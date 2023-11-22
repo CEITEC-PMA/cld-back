@@ -57,12 +57,35 @@ class ZonaController {
         inep,
         email,
       });
-      console.log(zona);
       zona.setSenha(password);
       await zona.save();
       return res.json({ zona: zona.enviarAuthJSON() });
     } catch (e) {
       res.status(422).json({ errors: "Usuário já consta no banco" });
+      next(e);
+    }
+  }
+
+  async addZonas(req, res, next) {
+    try {
+      const { zonas } = req.body;
+      await Promise.all(
+        zonas.map(async (item) => {
+          const { nome, inep, password, email } = item;
+          const zona = new Zona({
+            nome,
+            password,
+            inep,
+            email,
+          });
+          zona.setSenha(password);
+
+          await zona.save().catch((e) => console.log(e));
+        })
+      );
+      return res.send({ message: "zonas adicionados" });
+    } catch (e) {
+      console.log(e);
       next(e);
     }
   }

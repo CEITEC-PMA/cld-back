@@ -22,6 +22,12 @@ router.post(
   validate(ZonaValidation.store),
   zonaController.store
 ); //testado
+router.post(
+  "/zonaLote",
+  auth.required,
+  AdmValidation.adm,
+  zonaController.addZonas
+); //testado
 router.put("/", auth.required, zonaController.update); //testado
 router.put(
   "/inep",
