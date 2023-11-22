@@ -60,7 +60,7 @@ router.post(
 router.put(
   "/:id",
   auth.required,
-  AdmValidation.adm,
+  ZonaValidation.adm,
   validate(FuncionarioValidation.update),
   funcionarioController.update
 ); //testado
