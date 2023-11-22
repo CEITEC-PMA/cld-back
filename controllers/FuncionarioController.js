@@ -61,7 +61,7 @@ class FuncionarioController {
   async showAdm(req, res, next) {
     try {
       const funcionario = await Funcionario.findOne({
-        idescola: req.payload.id,
+        zona: req.payload.id,
         _id: req.params.id,
       });
       return res.send({ funcionario });
