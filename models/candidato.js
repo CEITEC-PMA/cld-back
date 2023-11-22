@@ -45,6 +45,10 @@ const CandidatoSchema = new mongoose.Schema(
       type: String,
       default: "",
     },
+    justificativa2: {
+      type: String,
+      default: "",
+    },
     // graduacao: {
     //   type: Boolean,
     //   required: [true, "não pode ficar vazio."],
@@ -103,6 +107,9 @@ const CandidatoSchema = new mongoose.Schema(
       type: String,
     },
     textoRecurso: {
+      type: String,
+    },
+    textoRecurso2: {
       type: String,
     },
     respostaComissao: {

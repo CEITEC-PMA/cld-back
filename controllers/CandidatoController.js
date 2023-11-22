@@ -397,20 +397,26 @@ class CandidatoController {
       foto,
       aprovado,
       justificativa,
+      justificativa2,
       textoRecurso,
+      textoRecurso2,
       respostaComissao,
     } = req.body;
     try {
-      const candidato = await Candidato.findById(req.params.id);
+      const candidatoId = req.params.id;
+      const candidato = await Candidato.findById(candidatoId);
+
       if (nome) candidato.nome = nome;
       if (email) candidato.email = email;
       if (respostaComissao) candidato.respostaComissao = respostaComissao;
       if (cpf) candidato.cpf = cpf;
       if (textoRecurso) candidato.textoRecurso = textoRecurso;
+      if (textoRecurso2) candidato.textoRecurso2 = textoRecurso2;
       if (telefone) candidato.telefone = telefone;
       if (endereco) candidato.endereco = endereco;
       if (rg) candidato.rg = rg;
       if (justificativa) candidato.justificativa = justificativa;
+      if (justificativa2) candidato.justificativa2 = justificativa2;
       if (aprovado) candidato.aprovado = aprovado;
       if (dt_nascimento) candidato.dt_nascimento = dt_nascimento;
       if (cargo) candidato.cargo = cargo;
