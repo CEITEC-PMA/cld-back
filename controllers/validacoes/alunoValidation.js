@@ -23,7 +23,7 @@ const AlunoValidation = {
     },
   },
 
-  store: {
+  addAluno: {
     body: {
       nome: Joi.string().required(),
       responsavel1: Joi.string().required(),
