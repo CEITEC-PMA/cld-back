@@ -115,6 +115,9 @@ const CandidatoSchema = new mongoose.Schema(
     respostaComissao: {
       type: String,
     },
+    respostaComissao2: {
+      type: String,
+    },
     email: {
       type: String,
       lowercase: true,

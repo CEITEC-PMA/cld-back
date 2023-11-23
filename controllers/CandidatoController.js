@@ -401,6 +401,7 @@ class CandidatoController {
       textoRecurso,
       textoRecurso2,
       respostaComissao,
+      respostaComissao2,
     } = req.body;
     try {
       const candidatoId = req.params.id;
@@ -409,6 +410,7 @@ class CandidatoController {
       if (nome) candidato.nome = nome;
       if (email) candidato.email = email;
       if (respostaComissao) candidato.respostaComissao = respostaComissao;
+      if (respostaComissao2) candidato.respostaComissao2 = respostaComissao2;
       if (cpf) candidato.cpf = cpf;
       if (textoRecurso) candidato.textoRecurso = textoRecurso;
       if (textoRecurso2) candidato.textoRecurso2 = textoRecurso2;
