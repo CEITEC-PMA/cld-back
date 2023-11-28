@@ -402,6 +402,7 @@ class CandidatoController {
       textoRecurso2,
       respostaComissao,
       respostaComissao2,
+      respostaFinalRecurso,
     } = req.body;
     try {
       const candidatoId = req.params.id;
@@ -439,6 +440,8 @@ class CandidatoController {
       if (data_entrada_docencia)
         candidato.data_entrada_docencia = data_entrada_docencia;
       if (numero_candidato) candidato.numero_candidato = numero_candidato;
+      if (respostaFinalRecurso)
+        candidato.respostaFinalRecurso = respostaFinalRecurso;
       if (foto) candidato.foto = foto;
       await candidato.save();
 
