@@ -46,11 +46,10 @@ router.post(
   "/",
   auth.required,
   ZonaValidation.adm,
-  validate(AlunoValidation.store),
+  validate(AlunoValidation.addAluno),
   alunoController.addAluno
 ); //testado
 
-// router.post("/", auth.required, AdmValidation.adm, validate(ZonaValidation.store), alunoController.store); //testado
 router.put(
   "/:id",
   auth.required,

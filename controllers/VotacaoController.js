@@ -57,6 +57,7 @@ class CandidatoController {
           $project: {
             tipo_voto: "$votos.tipo_voto",
             numero_candidato: "$candidato.numero_candidato",
+            nome_candidato: "$candidato.nome",
           },
         },
       ]);
@@ -93,18 +94,44 @@ class CandidatoController {
 
       const processarVotos = (tipo) => {
         const votosTipo = votacao.filter((voto) => voto.tipo_voto === tipo);
-        const candidato_um = votosTipo.filter(
+
+        const votosCandidatoUm = votosTipo.filter(
           (voto) => voto.numero_candidato === 1
-        ).length;
-        const candidato_dois = votosTipo.filter(
+        );
+        const candidato_um = {
+          numero_votos: votosCandidatoUm.length,
+          nome_candidato:
+            votosCandidatoUm.length > 0
+              ? votosCandidatoUm[0].nome_candidato
+              : null,
+        };
+
+        const votosCandidatoDois = votosTipo.filter(
           (voto) => voto.numero_candidato === 2
-        ).length;
-        const branco = votosTipo.filter(
+        );
+        const candidato_dois = {
+          numero_votos: votosCandidatoDois.length,
+          nome_candidato:
+            votosCandidatoDois.length > 0
+              ? votosCandidatoDois[0].nome_candidato
+              : null,
+        };
+
+        const votosBranco = votosTipo.filter(
           (voto) => voto.numero_candidato === 3
-        ).length;
-        const nulo = votosTipo.filter(
+        );
+        const branco = {
+          numero_votos: votosBranco.length,
+          nome_candidato: "Branco",
+        };
+
+        const votosNulo = votosTipo.filter(
           (voto) => voto.numero_candidato === 4
-        ).length;
+        );
+        const nulo = {
+          numero_votos: votosNulo.length,
+          nome_candidato: "Nulo",
+        };
 
         return {
           candidato_um,
