@@ -66,6 +66,7 @@ router.put(
 ); //testado
 // router.delete("/:id", auth.required, AdmValidation.adm, validate(ZonaValidation.remove), funcionarioController.remove); //testado
 router.delete("/", funcionarioController.remove);
+router.delete("/deleteNome", funcionarioController.removeByName);
 
 // // POPULAÇÃO
 // router.get("/", validate(ZonaValidation.adm), funcionarioController.showAll); //testado

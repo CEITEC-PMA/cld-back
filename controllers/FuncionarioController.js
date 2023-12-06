@@ -171,6 +171,30 @@ class FuncionarioController {
       next(e);
     }
   }
+
+  async removeByName(req, res, next) {
+    try {
+      const { funcionarios } = req.body;
+      const funcionariosNaoDeletados = [];
+      await Promise.all(
+        funcionarios.map(async (func) => {
+          const { nome, zona } = func;
+          const funcionario = await Funcionario.findOne({ nome, zona });
+          if (!funcionario) console.log(func.nome);
+          if (funcionario) {
+            funcionario.deletado = true;
+            await funcionario.save();
+          } else {
+            funcionariosNaoDeletados.push(func);
+          }
+        })
+      );
+      return res.send({ funcionariosNaoDeletados });
+    } catch (e) {
+      console.log(e);
+      next(e);
+    }
+  }
 }
 
 module.exports = FuncionarioController;
