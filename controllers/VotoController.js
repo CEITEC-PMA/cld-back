@@ -198,14 +198,26 @@ class VotoController {
 
       const alunos = await Aluno.find({ zona });
 
-      const quantidadeAlunosVotantes = alunos.filter((aluno) => aluno.votante);
+      const quantidadeAlunosVotantes = alunos.filter(
+        (aluno) => aluno.votante
+      ).length;
       const quantidadeAlunosNaoVotantes = alunos.filter(
         (aluno) => !aluno.votante
-      );
+      ).length;
 
-      console.log(funcionarios.length);
-      console.log(quantidadeAlunosVotantes.length);
-      console.log(quantidadeAlunosNaoVotantes.length);
+      const quantRespAlunosVotantes = alunos.filter(
+        (aluno) => aluno.votante
+      ).length;
+
+      const quantRespAlunosNaoVotantes = alunos.filter(
+        (aluno) => !aluno.votante
+      ).length;
+
+      const quantAlunosResp =
+        quantidadeAlunosVotantes +
+        quantidadeAlunosNaoVotantes +
+        quantRespAlunosVotantes +
+        quantRespAlunosNaoVotantes;
 
       const candidatosUnicos = [
         ...new Set(votos.map((item) => item.candidato._id)),
@@ -216,52 +228,51 @@ class VotoController {
           (voto) => voto.candidato._id === candidatoId
         );
 
-        const votosAlunos = votos.filter(
+        const quantVotosAlunos = votos.filter(
           (voto) =>
             voto.candidato._id === candidatoId && voto.tipo_voto === "aluno"
-        );
+        ).length;
 
-        const votosFuncionarios = votos.filter(
+        const quantVotosFuncionarios = votos.filter(
           (voto) =>
             voto.candidato._id === candidatoId && voto.tipo_voto === "func"
-        );
+        ).length;
 
-        const votosRespAlunosNaoVotantes = votos.filter(
+        const quantVotosRespAlunosNaoVotantes = votos.filter(
           (voto) =>
             voto.candidato._id === candidatoId &&
             voto.tipo_voto === "respAlunoNaoVotante"
-        );
-        const votosRespAlunosVotantes = votos.filter(
+        ).length;
+        const quantVotosRespAlunosVotantes = votos.filter(
           (voto) =>
             voto.candidato._id === candidatoId &&
             voto.tipo_voto === "respAlunoVotante"
-        );
+        ).length;
 
         const totalVotosAlunosResponsaveis =
-          votosAlunos.length +
-          votosRespAlunosVotantes.length +
-          votosRespAlunosNaoVotantes.length;
+          quantVotosAlunos +
+          quantVotosRespAlunosNaoVotantes +
+          quantVotosRespAlunosVotantes;
 
         const totalVotosAlunosResponsaveisFuncionarios =
-          totalVotosAlunosResponsaveis + votosFuncionarios.length;
+          totalVotosAlunosResponsaveis + quantVotosFuncionarios;
 
         const percentualAlunosResp =
-          ((votosAlunos.length +
-            votosRespAlunosVotantes.length +
-            votosRespAlunosNaoVotantes.length) *
-            50) /
-            (quantidadeAlunosVotantes.length * 2) +
-          quantidadeAlunosNaoVotantes.length * 2;
+          (totalVotosAlunosResponsaveis * 50) / quantAlunosResp;
 
         const percentualFuncionarios =
-          (votosFuncionarios.length * 50) / funcionarios.length;
+          (quantVotosFuncionarios * 50) / funcionarios.length;
+
+        console.log(percentualAlunosResp);
         return {
           nome: votoCandidato.candidato.nome,
-          votosAlunos: votosAlunos.length,
-          votosResponsaveisVotantes: votosRespAlunosVotantes.length,
-          votosResponsaveisNaoVotantes: votosRespAlunosNaoVotantes.length,
+          foto: votoCandidato.candidato.foto[0],
+          cpf: votoCandidato.candidato.cpf,
+          votosAlunos: quantVotosAlunos,
+          votosResponsaveisVotantes: quantVotosRespAlunosVotantes,
+          votosResponsaveisNaoVotantes: quantVotosRespAlunosNaoVotantes,
           totalVotosAlunosResponsaveis,
-          votosFuncionarios: votosFuncionarios.length,
+          votosFuncionarios: quantVotosFuncionarios,
           totalVotosAlunosResponsaveisFuncionarios,
           percentualAlunosResp,
           percentualFuncionarios,
