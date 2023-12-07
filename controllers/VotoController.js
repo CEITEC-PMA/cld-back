@@ -11,7 +11,7 @@ class VotoController {
   async store(req, res, next) {
     const horaInicial = new Date("2023-12-07T16:30:00").getTime();
 
-    const horaFinal = new Date("2023-12-07T17:10:00").getTime();
+    const horaFinal = new Date("2023-12-07T17:05:00").getTime();
 
     const horaAtual = new Date().getTime();
 
