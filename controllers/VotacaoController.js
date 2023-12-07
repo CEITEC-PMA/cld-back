@@ -62,9 +62,12 @@ class CandidatoController {
         },
       ]);
 
-      const alunos = await Aluno.find({ zona: zona });
+      const alunos = await Aluno.find({ zona: zona, deletado: false });
 
-      const funcionarios = await Funcionario.find({ zona: zona });
+      const funcionarios = await Funcionario.find({
+        zona: zona,
+        deletado: false,
+      });
 
       const quantidadeAlunosVotantes = alunos.filter(
         (aluno) => aluno.votante === true
@@ -145,10 +148,6 @@ class CandidatoController {
       const votosRespAlunosNaoVotantes = processarVotos("respAlunoNaoVotante");
       const votosAlunos = processarVotos("aluno");
       const votosFuncionarios = processarVotos("func");
-
-      console.log(
-        funcionarios.filter((Funcionario) => Funcionario.votou === true)
-      );
 
       return res.send({
         quantidadeAlunosVotantes,
