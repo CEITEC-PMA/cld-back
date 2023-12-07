@@ -9,68 +9,78 @@ const { badRequest } = require("../helpers/http-helper");
 
 class VotoController {
   async store(req, res, next) {
-    const zona = req.payload.id;
-    const { candidato, idVotante, tipoVoto } = req.body;
-    const votacao = await Votacao.findOne({ zona: zona });
+    const horaInicial = new Date("2023-12-07T16:30:00").getTime();
 
-    const hora = new Date();
-    const dataAtual = moment(hora).format("DD/MM/YYYY HH:mm:ss");
+    const horaFinal = new Date("2023-12-07T17:10:00").getTime();
 
-    if (!votacao) {
-      const votacaoIniciada = new Votacao({
-        zona: zona,
-        iniciada: dataAtual,
-      });
-      votacaoIniciada.save();
-      votacao = votacaoIniciada;
-    }
+    const horaAtual = new Date().getTime();
 
-    try {
-      if (
-        tipoVoto === "aluno" ||
-        tipoVoto === "respAlunoVotante" ||
-        tipoVoto === "respAlunoNaoVotante"
-      ) {
-        const aluno = await Aluno.findOne({ _id: idVotante });
-        if (tipoVoto === "aluno" && aluno.aluno_votou === true)
-          throw badRequest("Aluno já votou!");
+    if (horaAtual > horaInicial && horaAtual < horaFinal) {
+      const zona = req.payload.id;
+      const { candidato, idVotante, tipoVoto } = req.body;
+      const votacao = await Votacao.findOne({ zona: zona });
+
+      const hora = new Date();
+      const dataAtual = moment(hora).format("DD/MM/YYYY HH:mm:ss");
+
+      if (!votacao) {
+        const votacaoIniciada = new Votacao({
+          zona: zona,
+          iniciada: dataAtual,
+        });
+        votacaoIniciada.save();
+        votacao = votacaoIniciada;
+      }
+
+      try {
         if (
-          (tipoVoto === "respAlunoVotante" ||
-            tipoVoto === "respAlunoNaoVotante") &&
-          aluno.resp_votou === true
-        )
-          throw badRequest("Responsável já votou!");
-        if (tipoVoto === "aluno") aluno.aluno_votou = true;
-        if (
+          tipoVoto === "aluno" ||
           tipoVoto === "respAlunoVotante" ||
           tipoVoto === "respAlunoNaoVotante"
-        )
-          aluno.resp_votou = true;
-        await aluno.save();
+        ) {
+          const aluno = await Aluno.findOne({ _id: idVotante });
+          if (tipoVoto === "aluno" && aluno.aluno_votou === true)
+            throw badRequest("Aluno já votou!");
+          if (
+            (tipoVoto === "respAlunoVotante" ||
+              tipoVoto === "respAlunoNaoVotante") &&
+            aluno.resp_votou === true
+          )
+            throw badRequest("Responsável já votou!");
+          if (tipoVoto === "aluno") aluno.aluno_votou = true;
+          if (
+            tipoVoto === "respAlunoVotante" ||
+            tipoVoto === "respAlunoNaoVotante"
+          )
+            aluno.resp_votou = true;
+          await aluno.save();
+        }
+
+        if (tipoVoto === "func") {
+          const funcionario = await Funcionario.findOne({ _id: idVotante });
+          if (funcionario.votou === true)
+            throw badRequest("Funcionário já votou!");
+          funcionario.votou = true;
+          await funcionario.save();
+        }
+
+        const voto = new Voto({
+          zona: zona,
+          data_hora_voto: dataAtual,
+          tipo_voto: tipoVoto,
+          candidato: candidato,
+          tipo_voto: tipoVoto,
+        });
+        votacao.voto.push(voto._id);
+        await voto.save();
+
+        await votacao.save();
+        return res.send({ voto });
+      } catch (e) {
+        next(e);
       }
-
-      if (tipoVoto === "func") {
-        const funcionario = await Funcionario.findOne({ _id: idVotante });
-        if (funcionario.votou === true)
-          throw badRequest("Funcionário já votou!");
-        funcionario.votou = true;
-        await funcionario.save();
-      }
-
-      const voto = new Voto({
-        zona: zona,
-        data_hora_voto: dataAtual,
-        tipo_voto: tipoVoto,
-        candidato: candidato,
-        tipo_voto: tipoVoto,
-      });
-      votacao.voto.push(voto._id);
-      await voto.save();
-
-      await votacao.save();
-      return res.send({ voto });
-    } catch (e) {
-      next(e);
+    } else {
+      res.status(422).json({ errors: "Votação Finalizada" });
     }
   }
 
@@ -191,6 +201,7 @@ class VotoController {
   }
   async getDadosQuorum(req, res, next) {
     const zona = req.payload.id;
+
     try {
       const votos = await Voto.find({ zona }).populate("candidato");
 
