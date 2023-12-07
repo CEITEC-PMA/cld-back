@@ -9,9 +9,9 @@ const { badRequest } = require("../helpers/http-helper");
 
 class VotoController {
   async store(req, res, next) {
-    const horaInicial = new Date("2023-12-07T16:30:00").getTime();
+    const horaInicial = new Date("2023-12-08T07:15:00").getTime();
 
-    const horaFinal = new Date("2023-12-07T17:05:00").getTime();
+    const horaFinal = new Date("2023-12-08T20:00:00").getTime();
 
     const horaAtual = new Date().getTime();
 
