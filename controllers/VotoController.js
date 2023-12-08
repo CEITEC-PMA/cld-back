@@ -201,6 +201,30 @@ class VotoController {
     }
   }
 
+  async testeVotos(req, res, next) {
+    try {
+      const votos = await Voto.find({}).count();
+
+      const votosFunc = await Funcionario.find({ votou: true }).count();
+
+      const votosAlunos = await Aluno.find({ aluno_votou: true }).count();
+
+      const votosPais = await Aluno.find({ resp_votou: true }).count();
+
+      const somaVotos = votosAlunos + votosFunc + votosPais;
+
+      res.send({
+        votos,
+        votosAlunos,
+        votosPais,
+        votosFunc,
+        somaVotos,
+      });
+    } catch (e) {
+      next(e);
+    }
+  }
+
   async getDadosQuorum(req, res, next) {
     const zona = req.payload.id;
 

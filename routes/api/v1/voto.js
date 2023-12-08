@@ -35,6 +35,12 @@ router.get(
   AdmValidation.adm,
   votoController.getDadosQuorumAdm
 ); //testado
+router.get(
+  "/testeVotos/",
+  auth.required,
+  AdmValidation.adm,
+  votoController.testeVotos
+); //testado
 // router.get("/:id", auth.required, validate(VotacaoValidation.showAdm), votacaoController.showAdm); //testado
 // router.put("/:id", auth.required, validate(VotacaoValidation.update), votacaoController.update); //testado
 // router.delete("/:id", auth.required, votacaoController.removeAdm); //testado
