@@ -4,6 +4,7 @@ const Voto = mongoose.model("Voto");
 const Aluno = mongoose.model("Aluno");
 const Funcionario = mongoose.model("Funcionario");
 const Candidato = mongoose.model("Candidato");
+const Zona = mongoose.model("Zona");
 const Votacao = mongoose.model("Votacao");
 const { badRequest } = require("../helpers/http-helper");
 
@@ -199,6 +200,7 @@ class VotoController {
       next(e);
     }
   }
+
   async getDadosQuorum(req, res, next) {
     const zona = req.payload.id;
 
@@ -274,7 +276,108 @@ class VotoController {
         const percentualFuncionarios =
           (quantVotosFuncionarios * 50) / funcionarios.length;
 
-        console.log(percentualAlunosResp);
+        return {
+          nome: votoCandidato.candidato.nome,
+          foto: votoCandidato.candidato.foto[0],
+          cpf: votoCandidato.candidato.cpf,
+          quantidadeAlunosVotantes,
+          quantRespAlunosVotantes,
+          quantRespAlunosNaoVotantes,
+          quantFuncionarios: funcionarios.length,
+          votosAlunos: quantVotosAlunos,
+          votosResponsaveisVotantes: quantVotosRespAlunosVotantes,
+          votosResponsaveisNaoVotantes: quantVotosRespAlunosNaoVotantes,
+          totalVotosAlunosResponsaveis,
+          votosFuncionarios: quantVotosFuncionarios,
+          totalVotosAlunosResponsaveisFuncionarios,
+          percentualAlunosResp,
+          percentualFuncionarios,
+          percentualTotal: percentualAlunosResp + percentualFuncionarios,
+        };
+      });
+      res.send({ resposta });
+    } catch (e) {
+      next(e);
+    }
+  }
+
+  async getDadosQuorumAdm(req, res, next) {
+    const zona = req.payload.id;
+
+    try {
+      const zonaId = await Zona.findOne({ _id: req.params.id });
+
+      const votos = await Voto.find({ zona: zonaId }).populate("candidato");
+
+      const funcionarios = await Funcionario.find({ zona: zonaId });
+
+      const alunos = await Aluno.find({ zona: zonaId });
+
+      const quantidadeAlunosVotantes = alunos.filter(
+        (aluno) => aluno.votante
+      ).length;
+      const quantidadeAlunosNaoVotantes = alunos.filter(
+        (aluno) => !aluno.votante
+      ).length;
+
+      const quantRespAlunosVotantes = alunos.filter(
+        (aluno) => aluno.votante
+      ).length;
+
+      const quantRespAlunosNaoVotantes = alunos.filter(
+        (aluno) => !aluno.votante
+      ).length;
+
+      const quantAlunosResp =
+        quantidadeAlunosVotantes +
+        quantidadeAlunosNaoVotantes +
+        quantRespAlunosVotantes +
+        quantRespAlunosNaoVotantes;
+
+      const candidatosUnicos = [
+        ...new Set(votos.map((item) => item.candidato._id)),
+      ];
+
+      const resposta = candidatosUnicos.map((candidatoId) => {
+        const votoCandidato = votos.find(
+          (voto) => voto.candidato._id === candidatoId
+        );
+
+        const quantVotosAlunos = votos.filter(
+          (voto) =>
+            voto.candidato._id === candidatoId && voto.tipo_voto === "aluno"
+        ).length;
+
+        const quantVotosFuncionarios = votos.filter(
+          (voto) =>
+            voto.candidato._id === candidatoId && voto.tipo_voto === "func"
+        ).length;
+
+        const quantVotosRespAlunosNaoVotantes = votos.filter(
+          (voto) =>
+            voto.candidato._id === candidatoId &&
+            voto.tipo_voto === "respAlunoNaoVotante"
+        ).length;
+        const quantVotosRespAlunosVotantes = votos.filter(
+          (voto) =>
+            voto.candidato._id === candidatoId &&
+            voto.tipo_voto === "respAlunoVotante"
+        ).length;
+
+        const totalVotosAlunosResponsaveis =
+          quantVotosAlunos +
+          quantVotosRespAlunosNaoVotantes +
+          quantVotosRespAlunosVotantes;
+
+        const totalVotosAlunosResponsaveisFuncionarios =
+          totalVotosAlunosResponsaveis + quantVotosFuncionarios;
+
+        const percentualAlunosResp =
+          (totalVotosAlunosResponsaveis * 50) / quantAlunosResp;
+
+        const percentualFuncionarios =
+          (quantVotosFuncionarios * 50) / funcionarios.length;
+
         return {
           nome: votoCandidato.candidato.nome,
           foto: votoCandidato.candidato.foto[0],

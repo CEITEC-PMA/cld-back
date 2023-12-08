@@ -29,6 +29,12 @@ router.get(
   ZonaValidation.adm,
   votoController.getDadosQuorum
 ); //testado
+router.get(
+  "/dadosQuorum/:id",
+  auth.required,
+  AdmValidation.adm,
+  votoController.getDadosQuorumAdm
+); //testado
 // router.get("/:id", auth.required, validate(VotacaoValidation.showAdm), votacaoController.showAdm); //testado
 // router.put("/:id", auth.required, validate(VotacaoValidation.update), votacaoController.update); //testado
 // router.delete("/:id", auth.required, votacaoController.removeAdm); //testado
