@@ -271,7 +271,7 @@ class VotoController {
             voto.candidato._id === candidatoId && voto.tipo_voto === "aluno"
         ).length;
 
-        const quantVotosFuncionarios = zonaECandidato.filter((voto) => {
+        const quantVotosFuncionarios = votos.filter((voto) => {
           return (
             voto.candidato._id === candidatoId && voto.tipo_voto === "func"
           );
