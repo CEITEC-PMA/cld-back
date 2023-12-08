@@ -231,13 +231,14 @@ class VotoController {
     try {
       const votos = await Voto.find({ zona }).populate("candidato");
 
-      const funcionarios = await Funcionario.find({ zona });
+      const funcionarios = await Funcionario.find({ zona, deletado: false });
 
-      const alunos = await Aluno.find({ zona });
+      const alunos = await Aluno.find({ zona, deletado: false });
 
       const quantidadeAlunosVotantes = alunos.filter(
         (aluno) => aluno.votante
       ).length;
+
       const quantidadeAlunosNaoVotantes = alunos.filter(
         (aluno) => !aluno.votante
       ).length;
@@ -250,7 +251,7 @@ class VotoController {
         (aluno) => !aluno.votante
       ).length;
 
-      const quantAlunosResp =
+      const numeroTotalDeEleitores =
         quantidadeAlunosVotantes +
         quantidadeAlunosNaoVotantes +
         quantRespAlunosVotantes +
@@ -270,10 +271,11 @@ class VotoController {
             voto.candidato._id === candidatoId && voto.tipo_voto === "aluno"
         ).length;
 
-        const quantVotosFuncionarios = votos.filter(
-          (voto) =>
+        const quantVotosFuncionarios = zonaECandidato.filter((voto) => {
+          return (
             voto.candidato._id === candidatoId && voto.tipo_voto === "func"
-        ).length;
+          );
+        }).length;
 
         const quantVotosRespAlunosNaoVotantes = votos.filter(
           (voto) =>
@@ -286,16 +288,15 @@ class VotoController {
             voto.tipo_voto === "respAlunoVotante"
         ).length;
 
-        const totalVotosAlunosResponsaveis =
+        const paisEAlunos =
           quantVotosAlunos +
           quantVotosRespAlunosNaoVotantes +
           quantVotosRespAlunosVotantes;
-
         const totalVotosAlunosResponsaveisFuncionarios =
-          totalVotosAlunosResponsaveis + quantVotosFuncionarios;
+          paisEAlunos + quantVotosFuncionarios;
 
         const percentualAlunosResp =
-          (totalVotosAlunosResponsaveis * 50) / quantAlunosResp;
+          (paisEAlunos * 50) / numeroTotalDeEleitores;
 
         const percentualFuncionarios =
           (quantVotosFuncionarios * 50) / funcionarios.length;
@@ -311,7 +312,7 @@ class VotoController {
           votosAlunos: quantVotosAlunos,
           votosResponsaveisVotantes: quantVotosRespAlunosVotantes,
           votosResponsaveisNaoVotantes: quantVotosRespAlunosNaoVotantes,
-          totalVotosAlunosResponsaveis,
+          totalVotosAlunosResponsaveis: paisEAlunos,
           votosFuncionarios: quantVotosFuncionarios,
           totalVotosAlunosResponsaveisFuncionarios,
           percentualAlunosResp,
