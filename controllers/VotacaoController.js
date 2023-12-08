@@ -2,6 +2,7 @@ const mongoose = require("mongoose");
 const moment = require("moment");
 const Votacao = mongoose.model("Votacao");
 const Aluno = mongoose.model("Aluno");
+const Zona = mongoose.model("Zona");
 const Funcionario = mongoose.model("Funcionario");
 const Usuario = mongoose.model("Usuario");
 const fs = require("fs");
@@ -169,17 +170,166 @@ class CandidatoController {
     }
   }
 
+  // GET
   async showAdm(req, res, next) {
+    const zona = req.payload.id;
     try {
-      const votacao = await Votacao.findOne({ zona: req.params.id }).populate({
-        path: "voto",
-        populate: { path: "candidato" },
+      const zonaInep = await Zona.findOne({ _id: req.params.id });
+      const votacao = await Votacao.aggregate([
+        {
+          $match: {
+            zona: zonaInep._id,
+          },
+        },
+        {
+          $lookup: {
+            from: "votos",
+            localField: "voto",
+            foreignField: "_id",
+            as: "votos",
+          },
+        },
+        {
+          $unwind: "$votos",
+        },
+        {
+          $lookup: {
+            from: "candidatos",
+            localField: "votos.candidato",
+            foreignField: "_id",
+            as: "candidato",
+          },
+        },
+        {
+          $unwind: "$candidato",
+        },
+        {
+          $project: {
+            tipo_voto: "$votos.tipo_voto",
+            numero_candidato: "$candidato.numero_candidato",
+            nome_candidato: "$candidato.nome",
+          },
+        },
+      ]);
+
+      const alunos = await Aluno.find({ zona: zonaInep._id, deletado: false });
+
+      const funcionarios = await Funcionario.find({
+        zona: zonaInep._id,
+        deletado: false,
       });
-      return res.send({ votacao });
+
+      const quantidadeAlunosVotantes = alunos.filter(
+        (aluno) => aluno.votante === true
+      ).length;
+
+      const quantidadeAlunosNaoVotantes = alunos.filter(
+        (aluno) => aluno.votante === false
+      ).length;
+
+      const quantidadeFuncionarios = funcionarios.length;
+
+      const alunosVotaram = alunos.filter(
+        (aluno) => aluno.aluno_votou === true
+      ).length;
+
+      const funcionariosVotaram = funcionarios.filter(
+        (Funcionario) => Funcionario.votou === true
+      ).length;
+
+      const respAlunosVotantesVotaram = alunos.filter(
+        (aluno) => aluno.votante === true && aluno.resp_votou === true
+      ).length;
+
+      const respAlunosNaoVotantesVotaram = alunos.filter(
+        (aluno) => aluno.votante === false && aluno.resp_votou === true
+      ).length;
+
+      const processarVotos = (tipo) => {
+        const votosTipo = votacao.filter((voto) => voto.tipo_voto === tipo);
+
+        const votosCandidatoUm = votosTipo.filter(
+          (voto) => voto.numero_candidato === 1
+        );
+        const candidato_um = {
+          numero_votos: votosCandidatoUm.length,
+          nome_candidato:
+            votosCandidatoUm.length > 0
+              ? votosCandidatoUm[0].nome_candidato
+              : null,
+        };
+
+        const votosCandidatoDois = votosTipo.filter(
+          (voto) => voto.numero_candidato === 2
+        );
+        const candidato_dois = {
+          numero_votos: votosCandidatoDois.length,
+          nome_candidato:
+            votosCandidatoDois.length > 0
+              ? votosCandidatoDois[0].nome_candidato
+              : null,
+        };
+
+        const votosBranco = votosTipo.filter(
+          (voto) => voto.numero_candidato === 3
+        );
+        const branco = {
+          numero_votos: votosBranco.length,
+          nome_candidato: "Branco",
+        };
+
+        const votosNulo = votosTipo.filter(
+          (voto) => voto.numero_candidato === 4
+        );
+        const nulo = {
+          numero_votos: votosNulo.length,
+          nome_candidato: "Nulo",
+        };
+
+        return {
+          candidato_um,
+          candidato_dois,
+          branco,
+          nulo,
+        };
+      };
+
+      const votosRespAlunosVotantes = processarVotos("respAlunoVotante");
+      const votosRespAlunosNaoVotantes = processarVotos("respAlunoNaoVotante");
+      const votosAlunos = processarVotos("aluno");
+      const votosFuncionarios = processarVotos("func");
+
+      return res.send({
+        quantidadeAlunosVotantes,
+        quantidadeAlunosNaoVotantes,
+        quantidadeFuncionarios,
+        alunosVotaram,
+        funcionariosVotaram,
+        respAlunosVotantesVotaram,
+        respAlunosNaoVotantesVotaram,
+        votos: {
+          votosRespAlunosVotantes,
+          votosRespAlunosNaoVotantes,
+          votosAlunos,
+          votosFuncionarios,
+        },
+      });
     } catch (e) {
       next(e);
     }
   }
+
+  // async showAdm(req, res, next) {
+  //   try {
+  //     const votacao = await Votacao.findOne({ zona: req.params.id }).populate({
+  //       path: "voto",
+  //       populate: { path: "candidato" },
+  //     });
+  //     return res.send({ votacao });
+  //   } catch (e) {
+  //     next(e);
+  //   }
+  // }
 
   async showVotacaoFinalizada(req, res, next) {
     try {
