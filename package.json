@@ -1,14 +1,14 @@
 {
-  "name": "eleicao-educacao",
+  "name": "cld-2024",
   "version": "0.0.1",
-  "description": "api para sistema de eleição",
+  "description": "api para sistema de controle de livros didáticos",
   "main": "server.js",
   "scripts": {
     "test": "mocha --timeout 2000 --exit",
     "start": "nodemon",
-    "dev": "set NODE_ENV=development&&nodemon server.js --name=\"apiEleicao\"",
-    "build": "export NODE_ENV=production&&pm2 start server.js --name=\"apiEleicao\"",
-    "build:teste": "export NODE_ENV=production&&pm2 start server.js --name=\"apiEleicaoTeste\""
+    "dev": "set NODE_ENV=development&&nodemon server.js --name=\"apiCld\"",
+    "build": "export NODE_ENV=production&&pm2 start server.js --name=\"apiCld\"",
+    "build:teste": "export NODE_ENV=production&&pm2 start server.js --name=\"apiCldTeste\""
   },
   "author": "Guilherme de Sousa Mendes",
   "license": "ISC",
