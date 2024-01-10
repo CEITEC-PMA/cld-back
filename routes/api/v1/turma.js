@@ -20,6 +20,12 @@ router.get(
   AdmValidation.adm,
   turmaController.findAllAdm
 ); //testado
+router.get(
+  "/gerenciamento/:id",
+  auth.required,
+  AdmValidation.adm,
+  turmaController.findAllByZona
+); //testado
 router.get("/:id", auth.required, ZonaValidation.adm, turmaController.findOne); //testado
 router.put("/:id", auth.required, ZonaValidation.adm, turmaController.update); //testado
 router.post("/:id", auth.required, ZonaValidation.adm, turmaController.remove); //testado

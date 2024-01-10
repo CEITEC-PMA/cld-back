@@ -21,6 +21,12 @@ class TurmaController {
     res.send(turmas);
   }
 
+  async findAllByZona(req, res, next) {
+    const { id } = req.params;
+    const turmas = await Turma.find({ deletado: false, zona: id });
+    res.send(turmas);
+  }
+
   async findAllAdm(req, res, next) {
     try {
       const zona = req.payload.id;
