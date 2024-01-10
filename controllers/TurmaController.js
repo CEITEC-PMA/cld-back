@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const Turma = mongoose.model("Turma");
+const { v4: uuidv4 } = require("uuid");
 
 class TurmaController {
   async store(req, res, next) {
@@ -18,6 +19,41 @@ class TurmaController {
     const zona = req.payload.id;
     const turmas = await Turma.find({ deletado: false, zona: zona });
     res.send(turmas);
+  }
+
+  async findAllAdm(req, res, next) {
+    try {
+      const zona = req.payload.id;
+      const turmas = await Turma.find({ deletado: false });
+
+      const calcularSomas = (turmas) => {
+        const turmasAgrupadas = {};
+
+        turmas.forEach((turma) => {
+          const { nomeTurma, qtdeAlunos, qtdeProf } = turma;
+
+          if (!turmasAgrupadas[nomeTurma]) {
+            turmasAgrupadas[nomeTurma] = {
+              _id: uuidv4(),
+              nomeTurma,
+              qtdeAlunos: 0,
+              qtdeProf: 0,
+            };
+          }
+
+          turmasAgrupadas[nomeTurma].qtdeAlunos += parseInt(qtdeAlunos);
+          turmasAgrupadas[nomeTurma].qtdeProf += parseInt(qtdeProf);
+        });
+
+        return Object.values(turmasAgrupadas);
+      };
+
+      const turmasAgrupadas = calcularSomas(turmas);
+
+      res.send(turmasAgrupadas);
+    } catch (error) {
+      next(error);
+    }
   }
 
   async findOne(req, res, next) {
