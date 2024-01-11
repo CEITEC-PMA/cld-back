@@ -37,6 +37,17 @@ mongoose.connect(dbURI, {
   useUnifiedTopology: true,
 });
 
+const startUp = async () => {
+  try {
+    await mongoose.connect(dbURI);
+    console.log("connected to mongo");
+  } catch (e) {
+    console.log(e);
+  }
+};
+
+startUp();
+
 // SETUP EJS
 app.set("view engine", "ejs");
 
@@ -70,7 +81,10 @@ app.use((err, req, res, next) => {
 });
 
 // ESCUTAR
-app.listen(PORT, (err) => {
-  if (err) throw err;
-  console.log(`Rodando na //localhost:${PORT}`);
-});
+
+if (startUp) {
+  app.listen(PORT, (err) => {
+    if (err) throw err;
+    console.log(`Rodando na //localhost:${PORT}`);
+  });
+}
