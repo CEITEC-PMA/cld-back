@@ -120,6 +120,23 @@ class ZonaController {
       next(e);
     }
   }
+
+  /*RESETAR SENHA DE TODOS OS INEPS*/
+  // async resetaSenhaGeral(req, res, next) {
+  //   const { inep } = req.body;
+  //   try {
+  //     const zonas = await Zona.find();
+  //     zonas.map((zona) => {
+  //       zona.setSenha("123456");
+  //       zona.acesso = 0;
+  //       zona.save();
+  //     });
+
+  //     return res.send({ message: "ok" });
+  //   } catch (e) {
+  //     next(e);
+  //   }
+  // }
 }
 
 module.exports = ZonaController;
