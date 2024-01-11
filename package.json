@@ -6,7 +6,7 @@
   "scripts": {
     "test": "mocha --timeout 2000 --exit",
     "start": "pm2 start ecosystem.config.json --no-daemon",
-    "dev": "set NODE_ENV=development&&nodemon server.js --name=\"apiCld\"",
+    "dev": "cross-env NODE_ENV=development nodemon server.js",
     "build": "export NODE_ENV=production&&pm2 start server.js --name=\"apiCld\"",
     "build:teste": "export NODE_ENV=production&&pm2 start server.js --name=\"apiCldTeste\""
   },
