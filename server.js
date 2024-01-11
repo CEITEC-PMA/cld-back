@@ -31,6 +31,7 @@ app.use(
 );
 
 // VERSÃO TESTE
+console.log(isProduction);
 const dbURI = isProduction ? process.env.DB_PRODUCTION : process.env.DB_LOCAL;
 mongoose.connect(dbURI, {
   useNewUrlParser: true,
