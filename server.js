@@ -32,10 +32,6 @@ app.use(
 
 // VERSÃO TESTE
 const dbURI = isProduction ? process.env.DB_PRODUCTION : process.env.DB_LOCAL;
-mongoose.connect(dbURI, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-});
 
 const startUp = async () => {
   try {
