@@ -36,7 +36,6 @@ const dbURI = isProduction ? process.env.DB_PRODUCTION : process.env.DB_LOCAL;
 mongoose.connect(dbURI, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
-  useCreateIndex: true,
 });
 
 // SETUP EJS
