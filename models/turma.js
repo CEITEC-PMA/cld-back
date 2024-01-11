@@ -1,7 +1,5 @@
 const mongoose = require("mongoose"),
   Schema = mongoose.Schema;
-const uniqueValidator = require("mongoose-unique-validator");
-const mongoosePaginate = require("mongoose-paginate");
 
 const TurmaSchema = new mongoose.Schema(
   {
@@ -28,8 +26,5 @@ const TurmaSchema = new mongoose.Schema(
   { timestamps: true },
   { collection: "votacao" }
 );
-
-TurmaSchema.plugin(mongoosePaginate);
-TurmaSchema.plugin(uniqueValidator, { message: "já está sendo utilizado" });
 
 module.exports = mongoose.model("Turma", TurmaSchema);

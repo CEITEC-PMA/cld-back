@@ -1,7 +1,5 @@
 const mongoose = require("mongoose"),
   Schema = mongoose.Schema;
-const uniqueValidator = require("mongoose-unique-validator");
-const mongoosePaginate = require("mongoose-paginate");
 
 const FuncionarioSchema = new mongoose.Schema(
   {
@@ -32,10 +30,5 @@ const FuncionarioSchema = new mongoose.Schema(
   { timestamps: true },
   { collection: "funcionarios" }
 );
-
-FuncionarioSchema.plugin(mongoosePaginate);
-FuncionarioSchema.plugin(uniqueValidator, {
-  message: "já está sendo utilizado",
-});
 
 module.exports = mongoose.model("Funcionario", FuncionarioSchema);
